@@ -216,4 +216,9 @@ public interface VoidVisitor<A> {
     void visit(ModuleUsesStmt n, A arg);
 
     void visit(ModuleOpensStmt n, A arg);
+
+    VoidRuleVisitor DUMMY_RULE_VISITOR = new VoidRuleVisitor() {
+    };
+
+    VoidRuleVisitor<A> getRuleVisitor();
 }

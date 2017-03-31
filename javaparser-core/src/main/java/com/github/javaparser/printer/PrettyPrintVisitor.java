@@ -21,23 +21,118 @@
 
 package com.github.javaparser.printer;
 
-import com.github.javaparser.ast.*;
-import com.github.javaparser.ast.body.*;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.github.javaparser.ast.ArrayCreationLevel;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.PackageDeclaration;
+import com.github.javaparser.ast.body.AnnotationDeclaration;
+import com.github.javaparser.ast.body.AnnotationMemberDeclaration;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.EmptyMemberDeclaration;
+import com.github.javaparser.ast.body.EnumConstantDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.InitializerDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
-import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.ast.modules.*;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
+import com.github.javaparser.ast.expr.ArrayCreationExpr;
+import com.github.javaparser.ast.expr.ArrayInitializerExpr;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.CharLiteralExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.InstanceOfExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.SuperExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.modules.ModuleDeclaration;
+import com.github.javaparser.ast.modules.ModuleExportsStmt;
+import com.github.javaparser.ast.modules.ModuleOpensStmt;
+import com.github.javaparser.ast.modules.ModuleProvidesStmt;
+import com.github.javaparser.ast.modules.ModuleRequiresStmt;
+import com.github.javaparser.ast.modules.ModuleUsesStmt;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithVariables;
-import com.github.javaparser.ast.stmt.*;
-import com.github.javaparser.ast.type.*;
+import com.github.javaparser.ast.stmt.AssertStmt;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.BreakStmt;
+import com.github.javaparser.ast.stmt.CatchClause;
+import com.github.javaparser.ast.stmt.ContinueStmt;
+import com.github.javaparser.ast.stmt.DoStmt;
+import com.github.javaparser.ast.stmt.EmptyStmt;
+import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ForStmt;
+import com.github.javaparser.ast.stmt.ForeachStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.LabeledStmt;
+import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.SwitchEntryStmt;
+import com.github.javaparser.ast.stmt.SwitchStmt;
+import com.github.javaparser.ast.stmt.SynchronizedStmt;
+import com.github.javaparser.ast.stmt.ThrowStmt;
+import com.github.javaparser.ast.stmt.TryStmt;
+import com.github.javaparser.ast.stmt.WhileStmt;
+import com.github.javaparser.ast.type.ArrayType;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.IntersectionType;
+import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.TypeParameter;
+import com.github.javaparser.ast.type.UnionType;
+import com.github.javaparser.ast.type.UnknownType;
+import com.github.javaparser.ast.type.VoidType;
+import com.github.javaparser.ast.type.WildcardType;
 import com.github.javaparser.ast.visitor.Visitable;
+import com.github.javaparser.ast.visitor.VoidRuleVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.github.javaparser.utils.PositionUtils.sortByBeginPosition;
 import static com.github.javaparser.utils.Utils.isNullOrEmpty;
@@ -50,6 +145,8 @@ import static com.github.javaparser.utils.Utils.isNullOrEmpty;
 public class PrettyPrintVisitor implements VoidVisitor<Void> {
     protected final PrettyPrinterConfiguration configuration;
     protected final SourcePrinter printer;
+
+    private VoidRuleVisitor<Void> ruleVisitor;
 
     public PrettyPrintVisitor(PrettyPrinterConfiguration prettyPrinterConfiguration) {
         configuration = prettyPrinterConfiguration;
@@ -169,7 +266,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         printer.print(postfix);
     }
 
-    private void printJavaComment(final Optional<Comment> javacomment, final Void arg) {
+    void printJavaComment(final Optional<Comment> javacomment, final Void arg) {
         javacomment.ifPresent(c -> c.accept(this, arg));
     }
 
@@ -187,16 +284,34 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         }
 
         for (final Iterator<TypeDeclaration<?>> i = n.getTypes().iterator(); i.hasNext(); ) {
-            i.next().accept(this, arg);
-            printer.println();
-            if (i.hasNext()) {
-                printer.println();
-            }
+            TypeDeclaration type = i.next();
+            vistType( type, arg, i );
         }
 
         n.getModule().ifPresent(m -> m.accept(this, arg));
 
         printOrphanCommentsEnding(n);
+    }
+
+    private void vistType( TypeDeclaration type, Void arg, Iterator<?> i ) {
+        if ( acceptType( type ) ) {
+            type.accept( this, arg );
+            printer.println();
+            if ( i.hasNext() ) {
+                printer.println();
+            }
+        } else {
+            for ( final Iterator<BodyDeclaration<?>> j = type.getMembers().iterator(); j.hasNext(); ) {
+                BodyDeclaration body = j.next();
+                if (body instanceof TypeDeclaration) {
+                    vistType( ( (TypeDeclaration) body ), arg, j);
+                }
+            }
+        }
+    }
+
+    protected boolean acceptType(TypeDeclaration type) {
+        return true;
     }
 
     @Override
@@ -1438,7 +1553,16 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         printer.println(";");
     }
 
-    private void printOrphanCommentsBeforeThisChildNode(final Node node) {
+    @Override
+    public VoidRuleVisitor<Void> getRuleVisitor() {
+        return ruleVisitor != null ? ruleVisitor : DUMMY_RULE_VISITOR;
+    }
+
+    public void setRuleVisitor( VoidRuleVisitor<Void> ruleVisitor ) {
+        this.ruleVisitor = ruleVisitor;
+    }
+
+    private void printOrphanCommentsBeforeThisChildNode( final Node node ) {
         if (node instanceof Comment) return;
 
         Node parent = node.getParentNode().orElse(null);

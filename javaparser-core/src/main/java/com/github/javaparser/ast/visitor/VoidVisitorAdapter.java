@@ -36,6 +36,8 @@ import com.github.javaparser.ast.type.*;
  */
 public abstract class VoidVisitorAdapter<A> implements VoidVisitor<A> {
 
+    private VoidRuleVisitor<A> ruleVisitor = new VoidRuleVisitorAdapter<>(this);
+
     @Override
     public void visit(final AnnotationDeclaration n, final A arg) {
         n.getMembers().forEach(p -> p.accept(this, arg));
@@ -661,5 +663,10 @@ public abstract class VoidVisitorAdapter<A> implements VoidVisitor<A> {
         n.getModuleNames().forEach(p -> p.accept(this, arg));
         n.getName().accept(this, arg);
         n.getComment().ifPresent(l -> l.accept(this, arg));
+    }
+
+    @Override
+    public VoidRuleVisitor<A> getRuleVisitor() {
+        return ruleVisitor;
     }
 }

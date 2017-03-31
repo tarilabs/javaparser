@@ -21,6 +21,8 @@
 
 package com.github.javaparser;
 
+import java.util.Optional;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.AnnotationMemberDeclaration;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
@@ -31,10 +33,8 @@ import com.github.javaparser.ast.type.IntersectionType;
 import com.github.javaparser.ast.type.Type;
 import org.junit.Test;
 
-import java.util.Optional;
-
-import static com.github.javaparser.ParseStart.*;
-import static com.github.javaparser.Range.*;
+import static com.github.javaparser.ParseStart.COMPILATION_UNIT;
+import static com.github.javaparser.Range.range;
 import static com.github.javaparser.utils.TestUtils.assertInstanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -95,7 +95,7 @@ public class JavaParserTest {
 
         Problem problem = result.getProblem(0);
         assertEquals(range(1, 9, 1, 9), problem.getLocation().get());
-        assertEquals("Parse error. Found <EOF>, expected one of  \";\" \"<\" \"@\" \"abstract\" \"boolean\" \"byte\" \"char\" \"class\" \"default\" \"double\" \"enum\" \"exports\" \"final\" \"float\" \"int\" \"interface\" \"long\" \"module\" \"native\" \"open\" \"opens\" \"private\" \"protected\" \"provides\" \"public\" \"requires\" \"short\" \"static\" \"strictfp\" \"synchronized\" \"to\" \"transient\" \"transitive\" \"uses\" \"void\" \"volatile\" \"with\" \"{\" \"}\" <IDENTIFIER>", problem.getMessage());
+        assertEquals("Parse error. Found <EOF>, expected one of  \";\" \"<\" \"@\" \"abstract\" \"boolean\" \"byte\" \"char\" \"class\" \"default\" \"double\" \"enum\" \"exports\" \"final\" \"float\" \"int\" \"interface\" \"long\" \"module\" \"native\" \"open\" \"opens\" \"private\" \"protected\" \"provides\" \"public\" \"requires\" \"rule\" \"short\" \"static\" \"strictfp\" \"synchronized\" \"to\" \"transient\" \"transitive\" \"uses\" \"void\" \"volatile\" \"with\" \"{\" \"}\" <IDENTIFIER>", problem.getMessage());
         assertInstanceOf(ParseException.class, problem.getCause().get());
     }
 
