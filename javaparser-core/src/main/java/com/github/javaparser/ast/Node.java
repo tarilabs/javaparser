@@ -20,6 +20,13 @@
  */
 package com.github.javaparser.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.IdentityHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import com.github.javaparser.HasParentNode;
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.comments.BlockComment;
@@ -37,7 +44,6 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.metamodel.NodeMetaModel;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
-import java.util.*;
 import static java.util.Collections.unmodifiableList;
 
 /**

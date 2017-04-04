@@ -408,10 +408,6 @@ public final class CompilationUnit extends Node {
         return getTypes().stream().filter(type -> type.getNameAsString().equals(className) && type instanceof ClassOrInterfaceDeclaration && !((ClassOrInterfaceDeclaration) type).isInterface()).findFirst().map(t -> (ClassOrInterfaceDeclaration) t);
     }
 
-    public Optional<RuleDeclaration> getRuleByName(String className) {
-        return getTypes().stream().filter(type -> type.getNameAsString().equals(className) && type instanceof RuleDeclaration).findFirst().map(t -> (RuleDeclaration) t);
-    }
-
     /**
      * Try to get an interface by its name
      *
