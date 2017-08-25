@@ -20,7 +20,7 @@
  */
 package com.github.javaparser.ast.expr;
 
-import com.github.javaparser.Range;
+import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.nodeTypes.NodeWithName;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import static com.github.javaparser.utils.Utils.assertNotNull;
@@ -28,6 +28,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.AnnotationExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * A base class for the different types of annotations.
@@ -42,21 +44,25 @@ public abstract class AnnotationExpr extends Expression implements NodeWithName<
         this(null, new Name());
     }
 
+    @AllFieldsConstructor
     public AnnotationExpr(Name name) {
         this(null, name);
     }
 
-    public AnnotationExpr(Range range, Name name) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public AnnotationExpr(TokenRange tokenRange, Name name) {
+        super(tokenRange);
         setName(name);
+        customInitialization();
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Name getName() {
         return name;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public AnnotationExpr setName(final Name name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -71,6 +77,7 @@ public abstract class AnnotationExpr extends Expression implements NodeWithName<
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -78,12 +85,26 @@ public abstract class AnnotationExpr extends Expression implements NodeWithName<
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public AnnotationExpr clone() {
         return (AnnotationExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public AnnotationExprMetaModel getMetaModel() {
         return JavaParserMetaModel.annotationExprMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == name) {
+            setName((Name) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

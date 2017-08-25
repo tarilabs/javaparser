@@ -16,7 +16,7 @@
 
 package com.github.javaparser.ast.drlx;
 
-import com.github.javaparser.Range;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
@@ -27,8 +27,8 @@ public class RulePattern extends RuleItem {
     private final SimpleName bind;
     private final OOPathExpr expr;
 
-    public RulePattern( Range range, SimpleName type, SimpleName bind, OOPathExpr expr ) {
-        super( range );
+    public RulePattern( TokenRange tokenRange, SimpleName type, SimpleName bind, OOPathExpr expr ) {
+        super( tokenRange );
         this.type = type;
         this.bind = bind;
         this.expr = expr;

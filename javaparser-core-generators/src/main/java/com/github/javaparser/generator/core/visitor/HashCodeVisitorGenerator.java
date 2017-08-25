@@ -1,6 +1,5 @@
 package com.github.javaparser.generator.core.visitor;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -24,6 +23,8 @@ public class HashCodeVisitorGenerator extends VisitorGenerator {
 
     @Override
     protected void generateVisitMethodBody(BaseNodeMetaModel node, MethodDeclaration visitMethod, CompilationUnit compilationUnit) {
+        visitMethod.getParameters().forEach(p -> p.setFinal(true));
+
         final BlockStmt body = visitMethod.getBody().get();
         body.getStatements().clear();
 

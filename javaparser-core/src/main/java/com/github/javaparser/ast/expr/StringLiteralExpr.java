@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.expr;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
@@ -30,6 +29,8 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.metamodel.StringLiteralExprMetaModel;
 import com.github.javaparser.utils.StringEscapeUtils;
 import com.github.javaparser.utils.Utils;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * A literal string.
@@ -40,7 +41,7 @@ import com.github.javaparser.utils.Utils;
  *
  * @author Julio Vilmar Gesser
  */
-public class StringLiteralExpr extends LiteralStringValueExpr {
+public final class StringLiteralExpr extends LiteralStringValueExpr {
 
     public StringLiteralExpr() {
         this(null, "empty");
@@ -66,8 +67,11 @@ public class StringLiteralExpr extends LiteralStringValueExpr {
         return new StringLiteralExpr(Utils.escapeEndOfLines(string));
     }
 
-    public StringLiteralExpr(final Range range, final String value) {
-        super(range, value);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public StringLiteralExpr(TokenRange tokenRange, String value) {
+        super(tokenRange, value);
+        customInitialization();
     }
 
     @Override
@@ -81,6 +85,7 @@ public class StringLiteralExpr extends LiteralStringValueExpr {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -117,12 +122,22 @@ public class StringLiteralExpr extends LiteralStringValueExpr {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public StringLiteralExpr clone() {
         return (StringLiteralExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public StringLiteralExprMetaModel getMetaModel() {
         return JavaParserMetaModel.stringLiteralExprMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        return super.replace(node, replacementNode);
     }
 }

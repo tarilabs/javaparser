@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.stmt;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.observer.ObservableProperty;
@@ -31,6 +30,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.LocalClassDeclarationStmtMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * A class declaration inside a method. 
@@ -53,9 +54,12 @@ public final class LocalClassDeclarationStmt extends Statement {
         this(null, classDeclaration);
     }
 
-    public LocalClassDeclarationStmt(Range range, final ClassOrInterfaceDeclaration classDeclaration) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public LocalClassDeclarationStmt(TokenRange tokenRange, ClassOrInterfaceDeclaration classDeclaration) {
+        super(tokenRange);
         setClassDeclaration(classDeclaration);
+        customInitialization();
     }
 
     @Override
@@ -68,10 +72,12 @@ public final class LocalClassDeclarationStmt extends Statement {
         v.visit(this, arg);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ClassOrInterfaceDeclaration getClassDeclaration() {
         return classDeclaration;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public LocalClassDeclarationStmt setClassDeclaration(final ClassOrInterfaceDeclaration classDeclaration) {
         assertNotNull(classDeclaration);
         if (classDeclaration == this.classDeclaration) {
@@ -86,6 +92,7 @@ public final class LocalClassDeclarationStmt extends Statement {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -93,12 +100,26 @@ public final class LocalClassDeclarationStmt extends Statement {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public LocalClassDeclarationStmt clone() {
         return (LocalClassDeclarationStmt) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public LocalClassDeclarationStmtMetaModel getMetaModel() {
         return JavaParserMetaModel.localClassDeclarationStmtMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == classDeclaration) {
+            setClassDeclaration((ClassOrInterfaceDeclaration) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

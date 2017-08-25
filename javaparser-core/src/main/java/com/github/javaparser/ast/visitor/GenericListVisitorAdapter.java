@@ -20,96 +20,20 @@
  */
 package com.github.javaparser.ast.visitor;
 
-import com.github.javaparser.ast.ArrayCreationLevel;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.PackageDeclaration;
-import com.github.javaparser.ast.body.AnnotationDeclaration;
-import com.github.javaparser.ast.body.AnnotationMemberDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.EmptyMemberDeclaration;
-import com.github.javaparser.ast.body.EnumConstantDeclaration;
-import com.github.javaparser.ast.body.EnumDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.InitializerDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.*;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
-import com.github.javaparser.ast.expr.ArrayAccessExpr;
-import com.github.javaparser.ast.expr.ArrayCreationExpr;
-import com.github.javaparser.ast.expr.ArrayInitializerExpr;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.BinaryExpr;
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.CharLiteralExpr;
-import com.github.javaparser.ast.expr.ClassExpr;
-import com.github.javaparser.ast.expr.ConditionalExpr;
-import com.github.javaparser.ast.expr.DoubleLiteralExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.InstanceOfExpr;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
-import com.github.javaparser.ast.expr.MemberValuePair;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
-import com.github.javaparser.ast.expr.Name;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NormalAnnotationExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.SuperExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.expr.TypeExpr;
-import com.github.javaparser.ast.expr.UnaryExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.modules.*;
-import com.github.javaparser.ast.stmt.AssertStmt;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.BreakStmt;
-import com.github.javaparser.ast.stmt.CatchClause;
-import com.github.javaparser.ast.stmt.ContinueStmt;
-import com.github.javaparser.ast.stmt.DoStmt;
-import com.github.javaparser.ast.stmt.EmptyStmt;
-import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.stmt.ForStmt;
-import com.github.javaparser.ast.stmt.ForeachStmt;
-import com.github.javaparser.ast.stmt.IfStmt;
-import com.github.javaparser.ast.stmt.LabeledStmt;
-import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.stmt.SwitchEntryStmt;
-import com.github.javaparser.ast.stmt.SwitchStmt;
-import com.github.javaparser.ast.stmt.SynchronizedStmt;
-import com.github.javaparser.ast.stmt.ThrowStmt;
-import com.github.javaparser.ast.stmt.TryStmt;
-import com.github.javaparser.ast.stmt.WhileStmt;
-import com.github.javaparser.ast.type.ArrayType;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.IntersectionType;
-import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.TypeParameter;
-import com.github.javaparser.ast.type.UnionType;
-import com.github.javaparser.ast.type.UnknownType;
-import com.github.javaparser.ast.type.VoidType;
-import com.github.javaparser.ast.type.WildcardType;
+import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.ast.type.*;
+import javax.annotation.Generated;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 /**
  * A visitor that has a return value of ({@link List<R>}), and has a default implementation for all its visit
@@ -120,7 +44,8 @@ import java.util.ArrayList;
  */
 public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<List<R>, A> {
 
-    public List<R> visit(AnnotationDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final AnnotationDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -146,7 +71,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(AnnotationMemberDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final AnnotationMemberDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getDefaultValue().isPresent()) {
@@ -177,7 +103,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ArrayAccessExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ArrayAccessExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -198,7 +125,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ArrayCreationExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ArrayCreationExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -224,7 +152,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ArrayCreationLevel n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ArrayCreationLevel n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -245,7 +174,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ArrayInitializerExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ArrayInitializerExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -261,7 +191,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ArrayType n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ArrayType n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -282,7 +213,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(AssertStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final AssertStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -303,7 +235,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(AssignExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final AssignExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -324,7 +257,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(BinaryExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final BinaryExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -345,7 +279,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(BlockComment n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final BlockComment n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -356,7 +291,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(BlockStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final BlockStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -372,7 +308,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(BooleanLiteralExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final BooleanLiteralExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -383,7 +320,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(BreakStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final BreakStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getLabel().isPresent()) {
@@ -399,7 +337,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(CastExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final CastExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -420,7 +359,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(CatchClause n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final CatchClause n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -441,7 +381,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(CharLiteralExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final CharLiteralExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -452,7 +393,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ClassExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ClassExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -468,7 +410,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ClassOrInterfaceDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ClassOrInterfaceDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -509,7 +452,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ClassOrInterfaceType n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ClassOrInterfaceType n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -540,7 +484,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(CompilationUnit n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final CompilationUnit n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -571,7 +516,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ConditionalExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ConditionalExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -597,7 +543,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ConstructorDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ConstructorDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -638,7 +585,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ContinueStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ContinueStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getLabel().isPresent()) {
@@ -654,7 +602,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(DoStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final DoStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -675,7 +624,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(DoubleLiteralExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final DoubleLiteralExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -686,11 +636,24 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(EmptyMemberDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final EmptyStmt n, final A arg) {
+        List<R> result = new ArrayList<>();
+        List<R> tmp;
+        if (n.getComment().isPresent()) {
+            tmp = n.getComment().get().accept(this, arg);
+            if (tmp != null)
+                result.addAll(tmp);
+        }
+        return result;
+    }
+
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final EnclosedExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
-            tmp = n.getAnnotations().accept(this, arg);
+            tmp = n.getInner().accept(this, arg);
             if (tmp != null)
                 result.addAll(tmp);
         }
@@ -702,34 +665,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(EmptyStmt n, A arg) {
-        List<R> result = new ArrayList<>();
-        List<R> tmp;
-        if (n.getComment().isPresent()) {
-            tmp = n.getComment().get().accept(this, arg);
-            if (tmp != null)
-                result.addAll(tmp);
-        }
-        return result;
-    }
-
-    public List<R> visit(EnclosedExpr n, A arg) {
-        List<R> result = new ArrayList<>();
-        List<R> tmp;
-        if (n.getInner().isPresent()) {
-            tmp = n.getInner().get().accept(this, arg);
-            if (tmp != null)
-                result.addAll(tmp);
-        }
-        if (n.getComment().isPresent()) {
-            tmp = n.getComment().get().accept(this, arg);
-            if (tmp != null)
-                result.addAll(tmp);
-        }
-        return result;
-    }
-
-    public List<R> visit(EnumConstantDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final EnumConstantDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -760,7 +697,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(EnumDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final EnumDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -796,7 +734,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ExplicitConstructorInvocationStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ExplicitConstructorInvocationStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -822,7 +761,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ExpressionStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ExpressionStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -838,7 +778,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(FieldAccessExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final FieldAccessExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -846,8 +787,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
             if (tmp != null)
                 result.addAll(tmp);
         }
-        if (n.getScope().isPresent()) {
-            tmp = n.getScope().get().accept(this, arg);
+        {
+            tmp = n.getScope().accept(this, arg);
             if (tmp != null)
                 result.addAll(tmp);
         }
@@ -864,7 +805,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(FieldDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final FieldDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -885,7 +827,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ForStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ForStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -916,7 +859,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ForeachStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ForeachStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -942,7 +886,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(IfStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final IfStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -968,7 +913,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ImportDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ImportDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -984,7 +930,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(InitializerDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final InitializerDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1005,7 +952,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(InstanceOfExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final InstanceOfExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1026,7 +974,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(IntegerLiteralExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final IntegerLiteralExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -1037,7 +986,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(IntersectionType n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final IntersectionType n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1058,7 +1008,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(JavadocComment n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final JavadocComment n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -1069,7 +1020,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(LabeledStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final LabeledStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1090,7 +1042,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(LambdaExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final LambdaExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1111,7 +1064,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(LineComment n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final LineComment n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -1122,7 +1076,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(LocalClassDeclarationStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final LocalClassDeclarationStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1138,7 +1093,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(LongLiteralExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final LongLiteralExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -1149,7 +1105,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(MarkerAnnotationExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final MarkerAnnotationExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1165,7 +1122,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(MemberValuePair n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final MemberValuePair n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1186,7 +1144,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(MethodCallExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final MethodCallExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1217,7 +1176,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(MethodDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final MethodDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getBody().isPresent()) {
@@ -1263,7 +1223,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(MethodReferenceExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final MethodReferenceExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1284,7 +1245,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(NameExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final NameExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1300,7 +1262,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(Name n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final Name n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1321,7 +1284,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(NormalAnnotationExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final NormalAnnotationExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1342,7 +1306,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(NullLiteralExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final NullLiteralExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -1353,7 +1318,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ObjectCreationExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ObjectCreationExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getAnonymousClassBody().isPresent()) {
@@ -1389,7 +1355,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(PackageDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final PackageDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1410,7 +1377,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(Parameter n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final Parameter n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1441,7 +1409,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(PrimitiveType n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final PrimitiveType n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1457,7 +1426,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ReturnStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ReturnStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getExpression().isPresent()) {
@@ -1473,7 +1443,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(SimpleName n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final SimpleName n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -1484,7 +1455,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(SingleMemberAnnotationExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final SingleMemberAnnotationExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1505,7 +1477,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(StringLiteralExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final StringLiteralExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getComment().isPresent()) {
@@ -1516,7 +1489,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(SuperExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final SuperExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getClassExpr().isPresent()) {
@@ -1532,7 +1506,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(SwitchEntryStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final SwitchEntryStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getLabel().isPresent()) {
@@ -1553,7 +1528,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(SwitchStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final SwitchStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1574,7 +1550,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(SynchronizedStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final SynchronizedStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1595,7 +1572,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ThisExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ThisExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getClassExpr().isPresent()) {
@@ -1611,7 +1589,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(ThrowStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ThrowStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1627,7 +1606,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(TryStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final TryStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1645,8 +1625,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
             if (tmp != null)
                 result.addAll(tmp);
         }
-        if (n.getTryBlock().isPresent()) {
-            tmp = n.getTryBlock().get().accept(this, arg);
+        {
+            tmp = n.getTryBlock().accept(this, arg);
             if (tmp != null)
                 result.addAll(tmp);
         }
@@ -1658,7 +1638,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(TypeExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final TypeExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1674,7 +1655,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(TypeParameter n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final TypeParameter n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1700,7 +1682,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(UnaryExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final UnaryExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1716,7 +1699,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(UnionType n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final UnionType n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1737,7 +1721,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(UnknownType n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final UnknownType n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1753,7 +1738,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(VariableDeclarationExpr n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final VariableDeclarationExpr n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1774,7 +1760,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(VariableDeclarator n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final VariableDeclarator n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getInitializer().isPresent()) {
@@ -1800,7 +1787,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(VoidType n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final VoidType n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1816,7 +1804,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(WhileStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final WhileStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1837,7 +1826,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
         return result;
     }
 
-    public List<R> visit(WildcardType n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final WildcardType n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         if (n.getExtendedType().isPresent()) {
@@ -1869,7 +1859,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
-    public List<R> visit(ModuleDeclaration n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ModuleDeclaration n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1896,7 +1887,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
-    public List<R> visit(ModuleExportsStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ModuleExportsStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1918,7 +1910,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
-    public List<R> visit(ModuleOpensStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ModuleOpensStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1940,7 +1933,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
-    public List<R> visit(ModuleProvidesStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ModuleProvidesStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1962,7 +1956,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
-    public List<R> visit(ModuleRequiresStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ModuleRequiresStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1979,7 +1974,8 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
     }
 
     @Override
-    public List<R> visit(ModuleUsesStmt n, A arg) {
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final ModuleUsesStmt n, final A arg) {
         List<R> result = new ArrayList<>();
         List<R> tmp;
         {
@@ -1987,6 +1983,19 @@ public abstract class GenericListVisitorAdapter<R, A> implements GenericVisitor<
             if (tmp != null)
                 result.addAll(tmp);
         }
+        if (n.getComment().isPresent()) {
+            tmp = n.getComment().get().accept(this, arg);
+            if (tmp != null)
+                result.addAll(tmp);
+        }
+        return result;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.visitor.GenericListVisitorAdapterGenerator")
+    public List<R> visit(final UnparsableStmt n, final A arg) {
+        List<R> result = new ArrayList<>();
+        List<R> tmp;
         if (n.getComment().isPresent()) {
             tmp = n.getComment().get().accept(this, arg);
             if (tmp != null)

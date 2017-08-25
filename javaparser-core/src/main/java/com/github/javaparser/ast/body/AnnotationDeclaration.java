@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.body;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
@@ -36,6 +35,8 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * An annotation type declaration.<br/><code>@interface X { ... }</code>
@@ -57,8 +58,11 @@ public final class AnnotationDeclaration extends TypeDeclaration<AnnotationDecla
         this(null, modifiers, annotations, name, members);
     }
 
-    public AnnotationDeclaration(Range range, EnumSet<Modifier> modifiers, NodeList<AnnotationExpr> annotations, SimpleName name, NodeList<BodyDeclaration<?>> members) {
-        super(range, annotations, modifiers, name, members);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public AnnotationDeclaration(TokenRange tokenRange, EnumSet<Modifier> modifiers, NodeList<AnnotationExpr> annotations, SimpleName name, NodeList<BodyDeclaration<?>> members) {
+        super(tokenRange, modifiers, annotations, name, members);
+        customInitialization();
     }
 
     @Override
@@ -72,11 +76,13 @@ public final class AnnotationDeclaration extends TypeDeclaration<AnnotationDecla
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetNodeListsGenerator")
     public List<NodeList<?>> getNodeLists() {
         return Arrays.asList(getMembers(), getAnnotations());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -84,12 +90,22 @@ public final class AnnotationDeclaration extends TypeDeclaration<AnnotationDecla
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public AnnotationDeclaration clone() {
         return (AnnotationDeclaration) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public AnnotationDeclarationMetaModel getMetaModel() {
         return JavaParserMetaModel.annotationDeclarationMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        return super.replace(node, replacementNode);
     }
 }

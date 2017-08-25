@@ -23,9 +23,14 @@ package com.github.javaparser.printer;
 
 import java.util.function.Function;
 
+import static com.github.javaparser.utils.Utils.EOL;
+import static com.github.javaparser.utils.Utils.assertNotNull;
+
 public class PrettyPrinterConfiguration {
     private boolean printComments = true;
+    private boolean printJavaDoc = true;
     private String indent = "    ";
+    private String endOfLineCharacter = EOL;
     private Function<PrettyPrinterConfiguration, PrettyPrintVisitor> visitorFactory = PrettyPrintVisitor::new;
 
     public String getIndent() {
@@ -33,7 +38,7 @@ public class PrettyPrinterConfiguration {
     }
 
     public PrettyPrinterConfiguration setIndent(String indent) {
-        this.indent = indent;
+        this.indent = assertNotNull(indent);
         return this;
     }
 
@@ -41,8 +46,21 @@ public class PrettyPrinterConfiguration {
         return printComments;
     }
 
+    public boolean isIgnoreComments() {
+        return !printComments;
+    }
+
+    public boolean isPrintJavaDoc() {
+        return printJavaDoc;
+    }
+
     public PrettyPrinterConfiguration setPrintComments(boolean printComments) {
         this.printComments = printComments;
+        return this;
+    }
+
+    public PrettyPrinterConfiguration setPrintJavaDoc(boolean printJavaDoc) {
+        this.printJavaDoc = printJavaDoc;
         return this;
     }
 
@@ -51,7 +69,16 @@ public class PrettyPrinterConfiguration {
     }
 
     public PrettyPrinterConfiguration setVisitorFactory(Function<PrettyPrinterConfiguration, PrettyPrintVisitor> visitorFactory) {
-        this.visitorFactory = visitorFactory;
+        this.visitorFactory = assertNotNull(visitorFactory);
+        return this;
+    }
+
+    public String getEndOfLineCharacter() {
+        return endOfLineCharacter;
+    }
+
+    public PrettyPrinterConfiguration setEndOfLineCharacter(String endOfLineCharacter) {
+        this.endOfLineCharacter = assertNotNull(endOfLineCharacter);
         return this;
     }
 }

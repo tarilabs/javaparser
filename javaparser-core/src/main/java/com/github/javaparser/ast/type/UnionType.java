@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.type;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.AnnotationExpr;
@@ -31,39 +30,49 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import java.util.Arrays;
 import java.util.List;
 import static com.github.javaparser.utils.Utils.assertNotNull;
+import static java.util.stream.Collectors.joining;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
+import com.github.javaparser.metamodel.NonEmptyProperty;
 import com.github.javaparser.metamodel.UnionTypeMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * Represents a set of types. A given value of this type has to be assignable to at least one of the element types.
  * As of Java 8 it is only used in catch clauses.
  * <br/><code>try { ... } catch(<b>IOException | NullPointerException ex</b>) { ... }</code>
  */
-public class UnionType extends Type implements NodeWithAnnotations<UnionType> {
+public final class UnionType extends Type implements NodeWithAnnotations<UnionType> {
 
-    private NodeList<ReferenceType<?>> elements;
+    @NonEmptyProperty
+    private NodeList<ReferenceType> elements;
 
     public UnionType() {
         this(null, new NodeList<>());
     }
 
-    public UnionType(Range range, NodeList<ReferenceType<?>> elements) {
-        super(range, new NodeList<>());
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public UnionType(TokenRange tokenRange, NodeList<ReferenceType> elements) {
+        super(tokenRange);
         setElements(elements);
+        customInitialization();
     }
 
     @AllFieldsConstructor
-    public UnionType(NodeList<ReferenceType<?>> elements) {
+    public UnionType(NodeList<ReferenceType> elements) {
         this(null, elements);
     }
 
-    public NodeList<ReferenceType<?>> getElements() {
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public NodeList<ReferenceType> getElements() {
         return elements;
     }
 
-    public UnionType setElements(final NodeList<ReferenceType<?>> elements) {
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public UnionType setElements(final NodeList<ReferenceType> elements) {
         assertNotNull(elements);
         if (elements == this.elements) {
             return (UnionType) this;
@@ -92,11 +101,13 @@ public class UnionType extends Type implements NodeWithAnnotations<UnionType> {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetNodeListsGenerator")
     public List<NodeList<?>> getNodeLists() {
         return Arrays.asList(getElements(), getAnnotations());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -110,12 +121,33 @@ public class UnionType extends Type implements NodeWithAnnotations<UnionType> {
     }
 
     @Override
+    public String asString() {
+        return elements.stream().map(Type::asString).collect(joining("|"));
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public UnionType clone() {
         return (UnionType) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public UnionTypeMetaModel getMetaModel() {
         return JavaParserMetaModel.unionTypeMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        for (int i = 0; i < elements.size(); i++) {
+            if (elements.get(i) == node) {
+                elements.set(i, (ReferenceType) replacementNode);
+                return true;
+            }
+        }
+        return super.replace(node, replacementNode);
     }
 }

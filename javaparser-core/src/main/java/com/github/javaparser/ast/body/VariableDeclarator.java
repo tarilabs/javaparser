@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.body;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
@@ -32,19 +31,23 @@ import com.github.javaparser.ast.nodeTypes.NodeWithVariables;
 import com.github.javaparser.ast.observer.AstObserverAdapter;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
+import com.github.javaparser.metamodel.JavaParserMetaModel;
+import com.github.javaparser.metamodel.NonEmptyProperty;
+import com.github.javaparser.metamodel.VariableDeclaratorMetaModel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import static com.github.javaparser.utils.Utils.assertNonEmpty;
 import static com.github.javaparser.utils.Utils.assertNotNull;
-import com.github.javaparser.ast.visitor.CloneVisitor;
-import com.github.javaparser.metamodel.VariableDeclaratorMetaModel;
-import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
- * The declaration of a variable.<br/>In <code>int x = 14, y = 3;</code> "x = 14"  and " y = 3"  are VariableDeclarators.
+ * The declaration of a variable.<br/>In <code>int x = 14, y = 3;</code> "x = 14"  and " y = 3"  are
+ * VariableDeclarators.
  *
  * @author Julio Vilmar Gesser
  */
@@ -52,6 +55,7 @@ public final class VariableDeclarator extends Node implements NodeWithType<Varia
 
     private SimpleName name;
 
+    @NonEmptyProperty
     private Expression initializer;
 
     private Type type;
@@ -84,18 +88,21 @@ public final class VariableDeclarator extends Node implements NodeWithType<Varia
         this(null, type, name, initializer);
     }
 
-    public VariableDeclarator(Range range, Type type, SimpleName name, Expression initializer) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public VariableDeclarator(TokenRange tokenRange, Type type, SimpleName name, Expression initializer) {
+        super(tokenRange);
+        setType(type);
         setName(name);
         setInitializer(initializer);
-        setType(type);
-        registerObserversForDerivedProperties();
+        customInitialization();
     }
 
-    private void registerObserversForDerivedProperties() {
+    @Override
+    protected void customInitialization() {
         // We register an observer on the type property. When it is changed the MaximumCommonType is changes as well,
         // because it is derived from the type of the variables it contains, for this reason we notify about the change
-        this.register(new AstObserverAdapter() {
+        register(new AstObserverAdapter() {
 
             @Override
             public void propertyChange(Node observedNode, ObservableProperty property, Object oldValue, Object newValue) {
@@ -132,16 +139,17 @@ public final class VariableDeclarator extends Node implements NodeWithType<Varia
         v.visit(this, arg);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Optional<Expression> getInitializer() {
         return Optional.ofNullable(initializer);
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public SimpleName getName() {
         return name;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public VariableDeclarator setName(final SimpleName name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -161,6 +169,7 @@ public final class VariableDeclarator extends Node implements NodeWithType<Varia
      * @param initializer the initializer expression, can be null
      * @return this, the VariableDeclarator
      */
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public VariableDeclarator setInitializer(final Expression initializer) {
         if (initializer == this.initializer) {
             return (VariableDeclarator) this;
@@ -183,12 +192,12 @@ public final class VariableDeclarator extends Node implements NodeWithType<Varia
         return setInitializer(new NameExpr(assertNonEmpty(init)));
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Type getType() {
         return type;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public VariableDeclarator setType(final Type type) {
         assertNotNull(type);
         if (type == this.type) {
@@ -203,6 +212,7 @@ public final class VariableDeclarator extends Node implements NodeWithType<Varia
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -215,17 +225,42 @@ public final class VariableDeclarator extends Node implements NodeWithType<Varia
         return super.remove(node);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public VariableDeclarator removeInitializer() {
         return setInitializer((Expression) null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public VariableDeclarator clone() {
         return (VariableDeclarator) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public VariableDeclaratorMetaModel getMetaModel() {
         return JavaParserMetaModel.variableDeclaratorMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (initializer != null) {
+            if (node == initializer) {
+                setInitializer((Expression) replacementNode);
+                return true;
+            }
+        }
+        if (node == name) {
+            setName((SimpleName) replacementNode);
+            return true;
+        }
+        if (node == type) {
+            setType((Type) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

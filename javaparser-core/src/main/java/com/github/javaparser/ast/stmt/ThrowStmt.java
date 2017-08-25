@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.stmt;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -33,6 +32,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.ThrowStmtMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * Usage of the throw statement.
@@ -53,9 +54,12 @@ public final class ThrowStmt extends Statement implements NodeWithExpression<Thr
         this(null, expression);
     }
 
-    public ThrowStmt(Range range, final Expression expression) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public ThrowStmt(TokenRange tokenRange, Expression expression) {
+        super(tokenRange);
         setExpression(expression);
+        customInitialization();
     }
 
     @Override
@@ -68,12 +72,12 @@ public final class ThrowStmt extends Statement implements NodeWithExpression<Thr
         v.visit(this, arg);
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Expression getExpression() {
         return expression;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ThrowStmt setExpression(final Expression expression) {
         assertNotNull(expression);
         if (expression == this.expression) {
@@ -88,6 +92,7 @@ public final class ThrowStmt extends Statement implements NodeWithExpression<Thr
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -95,12 +100,26 @@ public final class ThrowStmt extends Statement implements NodeWithExpression<Thr
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public ThrowStmt clone() {
         return (ThrowStmt) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public ThrowStmtMetaModel getMetaModel() {
         return JavaParserMetaModel.throwStmtMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == expression) {
+            setExpression((Expression) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

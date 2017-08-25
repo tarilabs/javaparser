@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.stmt;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
@@ -35,6 +34,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.SwitchStmtMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * A switch statement.
@@ -59,10 +60,13 @@ public final class SwitchStmt extends Statement {
         this(null, selector, entries);
     }
 
-    public SwitchStmt(Range range, final Expression selector, final NodeList<SwitchEntryStmt> entries) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public SwitchStmt(TokenRange tokenRange, Expression selector, NodeList<SwitchEntryStmt> entries) {
+        super(tokenRange);
         setSelector(selector);
         setEntries(entries);
+        customInitialization();
     }
 
     @Override
@@ -75,6 +79,7 @@ public final class SwitchStmt extends Statement {
         v.visit(this, arg);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<SwitchEntryStmt> getEntries() {
         return entries;
     }
@@ -83,10 +88,12 @@ public final class SwitchStmt extends Statement {
         return getEntries().get(i);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Expression getSelector() {
         return selector;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public SwitchStmt setEntries(final NodeList<SwitchEntryStmt> entries) {
         assertNotNull(entries);
         if (entries == this.entries) {
@@ -110,6 +117,7 @@ public final class SwitchStmt extends Statement {
         return this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public SwitchStmt setSelector(final Expression selector) {
         assertNotNull(selector);
         if (selector == this.selector) {
@@ -124,11 +132,13 @@ public final class SwitchStmt extends Statement {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetNodeListsGenerator")
     public List<NodeList<?>> getNodeLists() {
         return Arrays.asList(getEntries());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -142,12 +152,32 @@ public final class SwitchStmt extends Statement {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public SwitchStmt clone() {
         return (SwitchStmt) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public SwitchStmtMetaModel getMetaModel() {
         return JavaParserMetaModel.switchStmtMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i) == node) {
+                entries.set(i, (SwitchEntryStmt) replacementNode);
+                return true;
+            }
+        }
+        if (node == selector) {
+            setSelector((Expression) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

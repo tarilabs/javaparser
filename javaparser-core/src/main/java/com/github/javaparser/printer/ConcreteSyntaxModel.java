@@ -25,7 +25,6 @@ import com.github.javaparser.GeneratedJavaParserConstants;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.Comment;
-import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.modules.*;
 import com.github.javaparser.ast.observer.ObservableProperty;
@@ -34,18 +33,16 @@ import com.github.javaparser.ast.type.*;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.printer.concretesyntaxmodel.CsmConditional;
 import com.github.javaparser.printer.concretesyntaxmodel.CsmElement;
-import com.github.javaparser.printer.concretesyntaxmodel.CsmToken;
+import com.github.javaparser.printer.concretesyntaxmodel.CsmMix;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.github.javaparser.GeneratedJavaParserConstants.*;
 import static com.github.javaparser.ast.observer.ObservableProperty.*;
 import static com.github.javaparser.printer.concretesyntaxmodel.CsmConditional.Condition.*;
 import static com.github.javaparser.printer.concretesyntaxmodel.CsmElement.*;
+import static com.github.javaparser.utils.Utils.EOL;
 
 /**
  * The Concrete Syntax Model for a single node type. It knows the syntax used to represent a certain element in Java
@@ -53,11 +50,18 @@ import static com.github.javaparser.printer.concretesyntaxmodel.CsmElement.*;
  */
 public class ConcreteSyntaxModel {
 
-    private static Map<Class, CsmElement> concreteSyntaxModelByClass = new HashMap<>();
+    private static final Map<Class, CsmElement> concreteSyntaxModelByClass = new HashMap<>();
     private static Optional<String> initializationError;
 
     private static CsmElement modifiers() {
         return list(ObservableProperty.MODIFIERS, space(), none(), space());
+    }
+
+    /**
+     * Build a mix collecting all the elements specified.
+     */
+    private static CsmElement mix(CsmElement... elements) {
+        return new CsmMix(Arrays.asList(elements));
     }
 
     private static CsmElement memberAnnotations() {
@@ -148,8 +152,6 @@ public class ConcreteSyntaxModel {
                 child(ObservableProperty.BODY)
         ));
 
-        concreteSyntaxModelByClass.put(EmptyMemberDeclaration.class, sequence(comment(), token(GeneratedJavaParserConstants.SEMICOLON)));
-
         concreteSyntaxModelByClass.put(EnumConstantDeclaration.class, sequence(
                 comment(),
                 memberAnnotations(),
@@ -206,8 +208,7 @@ public class ConcreteSyntaxModel {
         concreteSyntaxModelByClass.put(MethodDeclaration.class, sequence(
                 orphanCommentsBeforeThis(),
                 comment(),
-                memberAnnotations(),
-                modifiers(),
+                mix(memberAnnotations(), modifiers()),
                 typeParameters(),
                 child(ObservableProperty.TYPE),
                 space(),
@@ -332,7 +333,8 @@ public class ConcreteSyntaxModel {
 
         concreteSyntaxModelByClass.put(FieldAccessExpr.class, CsmElement.sequence(
                 CsmElement.comment(),
-                CsmElement.conditional(SCOPE, IS_PRESENT, CsmElement.sequence(CsmElement.child(SCOPE), CsmElement.token(GeneratedJavaParserConstants.DOT))),
+                CsmElement.child(SCOPE), 
+                CsmElement.token(GeneratedJavaParserConstants.DOT),
                 child(ObservableProperty.NAME)
         ));
 
@@ -561,6 +563,11 @@ public class ConcreteSyntaxModel {
         ));
 
         concreteSyntaxModelByClass.put(EmptyStmt.class, CsmElement.sequence(
+                CsmElement.comment(),
+                CsmElement.token(GeneratedJavaParserConstants.SEMICOLON)
+        ));
+
+        concreteSyntaxModelByClass.put(UnparsableStmt.class, CsmElement.sequence(
                 CsmElement.comment(),
                 CsmElement.token(GeneratedJavaParserConstants.SEMICOLON)
         ));
@@ -908,23 +915,6 @@ public class ConcreteSyntaxModel {
         }
     }
 
-    private static class JavadocContentTokenCalculator implements CsmToken.TokenContentCalculator {
-        @Override
-        public String calculate(Node node) {
-            return "/**" + ((JavadocComment) node).getContent() + "*";
-        }
-
-        @Override
-        public int hashCode() {
-            return 1;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof JavadocContentTokenCalculator;
-        }
-    }
-
     private ConcreteSyntaxModel() {
 
     }
@@ -934,15 +924,15 @@ public class ConcreteSyntaxModel {
     }
 
     public static String genericPrettyPrint(Node node) {
-        SourcePrinter sourcePrinter = new SourcePrinter("    ");
+        SourcePrinter sourcePrinter = new SourcePrinter("    ", EOL);
         forClass(node.getClass()).prettyPrint(node, sourcePrinter);
         return sourcePrinter.getSource();
     }
 
     public static CsmElement forClass(Class<? extends Node> nodeClazz) {
-        if (initializationError.isPresent()) {
-            throw new IllegalStateException(initializationError.get());
-        }
+        initializationError.ifPresent(s -> {
+            throw new IllegalStateException(s);
+        });
         if (!concreteSyntaxModelByClass.containsKey(nodeClazz)) {
             throw new UnsupportedOperationException(nodeClazz.getSimpleName());
         }

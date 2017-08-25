@@ -16,7 +16,7 @@
 
 package com.github.javaparser.ast.drlx;
 
-import com.github.javaparser.Range;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.visitor.GenericVisitor;
@@ -26,8 +26,8 @@ public class RuleBody extends Node {
 
     private final NodeList<RuleItem> items;
 
-    public RuleBody( Range range, NodeList<RuleItem> items ) {
-        super( range );
+    public RuleBody( TokenRange tokenRange, NodeList<RuleItem> items ) {
+        super( tokenRange );
         this.items = items;
     }
 

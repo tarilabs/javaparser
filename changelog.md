@@ -1,3 +1,97 @@
+Version 3.3.2
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/54?closed=1)
+* `VisitorMap` lets you overre hashcode/equals for nodes when used as a key for a map.
+
+Version 3.3.1
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/53?closed=1)
+* The token list is now mutable - see methods on `JavaToken`.
+This caused mild breakage - some fields have become `Optional`.
+
+Version 3.3.0
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/52?closed=1)
+* Breaking: `TryStmt::tryBlock` and `EnclosedExpr::inner` were optional for no good reason. Now they are required.
+* You can now ask a `JavaToken` for its category, which is useful for examining the token list or doing syntax highlighting or so.
+* `enum` and `strictfp` can now be used as identifiers on lower Java versions.
+
+Version 3.2.12
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/51?closed=1)
+
+Version 3.2.11
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/50?closed=1)
+* We're up to date with the latest Java 9 module system again.
+
+Version 3.2.10
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/49?closed=1)
+* `Node.replace(old, new)` was added, including property-specific `X.replaceY(newY)` methods
+
+Version 3.2.9
+------------------
+Scrapped due to release problem.
+
+Version 3.2.8
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/48?closed=1)
+* Added `isInnerClass()` that checks if a `ClassOrInterfaceDeclaration` is an inner class (note: this is different from a nested class!)
+* @ryan-beckett contributed a huge [Eclipse setup guide](https://github.com/javaparser/javaparser/wiki/Eclipse-Project-Setup-Guide)
+
+Version 3.2.7
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/47?closed=1)
+* We now recover from some parse errors! [Here is an article](https://matozoid.github.io/2017/06/11/parse-error-recovery.html)
+
+Version 3.2.6
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/46?closed=1)
+* `EmptyMemberDeclaration` is gone! 
+It was deprecated for a while because it it was in the AST, but doesn't have any meaning in a Java program. 
+`EmptyStmt` was also deprecated, but that has been reverted. 
+This node *does* have meaning.
+
+Version 3.2.5
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/45?closed=1)
+* `NodeWithCondition` was added on all nodes containing a condition.
+* Lots of work on improving lexical preservation.
+* If a file was parsed from a file system, you can now get path information etc. from `CompilationUnit`
+* API BREAKING: every node now points to its start and end token.
+Some of the API has started returning `TokenRange` instead of `Range` - you can call `toRange` to get the old object type.
+We may still change the naming of some of this code in the following month.
+
+Version 3.2.4
+------------------
+New style changelog, no more issue numbers, but a link: 
+[issues resolved](https://github.com/javaparser/javaparser/milestone/44?closed=1)
+and any notable changes:
+* the new method `Node.removeForced()` by removing it, or removing the first parent that is optional.
+This is different from `Node.remove()`, `remove()` only tries to remove the node from the parent and fails if it can't.
+* `FieldAccessExpr.scope` is now a required property.
+You might find some `get()`s in your code that are no longer necessary.
+* `ReferenceType` no longer has a type parameter, so every `ReferenceType<?>` can be replaced by `ReferenceType` now.
+
+Version 3.2.3
+------------------
+* 907 906 905 903 911 910 909 908 smaller improvements and fixes
+
+Version 3.2.2
+------------------
+Beta: `TreeStructureVisitor`.
+
+* 770 902 904 901 smaller improvements and fixes
+
+Version 3.2.1
+------------------
+Beta: `TreeStructureVisitor`.
+
+* Maven dependencies were updated to their latest versions 
+* 890 the concept of "method signature" now exists in JavaParser
+* 896 891 889 887 882 789 smaller improvements and fixes
+
 Version 3.2.0
 ------------------
 The lexical preservation code is stable!

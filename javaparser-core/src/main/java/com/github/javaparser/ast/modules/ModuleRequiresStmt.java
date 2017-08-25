@@ -1,6 +1,5 @@
 package com.github.javaparser.ast.modules;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
@@ -16,11 +15,13 @@ import com.github.javaparser.metamodel.ModuleRequiresStmtMetaModel;
 import java.util.EnumSet;
 import static com.github.javaparser.ast.Modifier.TRANSITIVE;
 import static com.github.javaparser.utils.Utils.assertNotNull;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * A require statement in module-info.java. <code>require a.b.C;</code>
  */
-public class ModuleRequiresStmt extends ModuleStmt implements NodeWithStaticModifier<ModuleRequiresStmt>, NodeWithName<ModuleRequiresStmt> {
+public final class ModuleRequiresStmt extends ModuleStmt implements NodeWithStaticModifier<ModuleRequiresStmt>, NodeWithName<ModuleRequiresStmt> {
 
     private EnumSet<Modifier> modifiers;
 
@@ -35,10 +36,13 @@ public class ModuleRequiresStmt extends ModuleStmt implements NodeWithStaticModi
         this(null, modifiers, name);
     }
 
-    public ModuleRequiresStmt(Range range, EnumSet<Modifier> modifiers, Name name) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public ModuleRequiresStmt(TokenRange tokenRange, EnumSet<Modifier> modifiers, Name name) {
+        super(tokenRange);
         setModifiers(modifiers);
         setName(name);
+        customInitialization();
     }
 
     @Override
@@ -51,12 +55,12 @@ public class ModuleRequiresStmt extends ModuleStmt implements NodeWithStaticModi
         v.visit(this, arg);
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public EnumSet<Modifier> getModifiers() {
         return modifiers;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ModuleRequiresStmt setModifiers(final EnumSet<Modifier> modifiers) {
         assertNotNull(modifiers);
         if (modifiers == this.modifiers) {
@@ -67,12 +71,12 @@ public class ModuleRequiresStmt extends ModuleStmt implements NodeWithStaticModi
         return this;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Name getName() {
         return name;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ModuleRequiresStmt setName(final Name name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -95,6 +99,7 @@ public class ModuleRequiresStmt extends ModuleStmt implements NodeWithStaticModi
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -102,12 +107,26 @@ public class ModuleRequiresStmt extends ModuleStmt implements NodeWithStaticModi
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public ModuleRequiresStmt clone() {
         return (ModuleRequiresStmt) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public ModuleRequiresStmtMetaModel getMetaModel() {
         return JavaParserMetaModel.moduleRequiresStmtMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == name) {
+            setName((Name) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

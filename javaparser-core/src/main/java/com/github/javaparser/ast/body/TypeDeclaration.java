@@ -20,7 +20,13 @@
  */
 package com.github.javaparser.ast.body;
 
-import com.github.javaparser.Range;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.Generated;
+
+import com.github.javaparser.TokenRange;
+import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
@@ -29,7 +35,6 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc;
 import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
-import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithAccessModifiers;
 import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithStaticModifier;
@@ -38,17 +43,16 @@ import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.metamodel.TypeDeclarationMetaModel;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
+
 import static com.github.javaparser.utils.Utils.assertNotNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A base class for all types of type declarations.
  *
  * @author Julio Vilmar Gesser
  */
-public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T> implements NodeWithSimpleName<T>, NodeWithJavadoc<T>, NodeWithMembers<T>, NodeWithAccessModifiers<T>, NodeWithStaticModifier<T>, NodeWithStrictfpModifier<T> {
+public abstract class TypeDeclaration<T extends TypeDeclaration<?>> extends BodyDeclaration<T> implements NodeWithSimpleName<T>, NodeWithJavadoc<T>, NodeWithMembers<T>, NodeWithAccessModifiers<T>, NodeWithStaticModifier<T>, NodeWithStrictfpModifier<T> {
 
     private SimpleName name;
 
@@ -57,22 +61,26 @@ public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T>
     private NodeList<BodyDeclaration<?>> members;
 
     public TypeDeclaration() {
-        this(null, new NodeList<>(), EnumSet.noneOf(Modifier.class), new SimpleName(), new NodeList<>());
+        this(null, EnumSet.noneOf(Modifier.class), new NodeList<>(), new SimpleName(), new NodeList<>());
     }
 
     public TypeDeclaration(EnumSet<Modifier> modifiers, String name) {
-        this(null, new NodeList<>(), modifiers, new SimpleName(name), new NodeList<>());
+        this(null, modifiers, new NodeList<>(), new SimpleName(name), new NodeList<>());
     }
 
-    public TypeDeclaration(NodeList<AnnotationExpr> annotations, EnumSet<Modifier> modifiers, SimpleName name, NodeList<BodyDeclaration<?>> members) {
-        this(null, annotations, modifiers, name, members);
+    @AllFieldsConstructor
+    public TypeDeclaration(EnumSet<Modifier> modifiers, NodeList<AnnotationExpr> annotations, SimpleName name, NodeList<BodyDeclaration<?>> members) {
+        this(null, modifiers, annotations, name, members);
     }
 
-    public TypeDeclaration(Range range, NodeList<AnnotationExpr> annotations, EnumSet<Modifier> modifiers, SimpleName name, NodeList<BodyDeclaration<?>> members) {
-        super(range, annotations);
-        setName(name);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public TypeDeclaration(TokenRange tokenRange, EnumSet<Modifier> modifiers, NodeList<AnnotationExpr> annotations, SimpleName name, NodeList<BodyDeclaration<?>> members) {
+        super(tokenRange, annotations);
         setModifiers(modifiers);
+        setName(name);
         setMembers(members);
+        customInitialization();
     }
 
     /**
@@ -86,7 +94,7 @@ public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T>
         return (T) this;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<BodyDeclaration<?>> getMembers() {
         return members;
     }
@@ -97,13 +105,13 @@ public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T>
      * @return modifiers
      * @see Modifier
      */
-    @Override
-    public final EnumSet<Modifier> getModifiers() {
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public EnumSet<Modifier> getModifiers() {
         return modifiers;
     }
 
     @SuppressWarnings("unchecked")
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public T setMembers(final NodeList<BodyDeclaration<?>> members) {
         assertNotNull(members);
         if (members == this.members) {
@@ -118,7 +126,7 @@ public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T>
     }
 
     @SuppressWarnings("unchecked")
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public T setModifiers(final EnumSet<Modifier> modifiers) {
         assertNotNull(modifiers);
         if (modifiers == this.modifiers) {
@@ -130,7 +138,7 @@ public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T>
     }
 
     @SuppressWarnings("unchecked")
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public T setName(final SimpleName name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -144,8 +152,8 @@ public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T>
         return (T) this;
     }
 
-    @Override
-    public final SimpleName getName() {
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public SimpleName getName() {
         return name;
     }
 
@@ -157,6 +165,7 @@ public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T>
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -177,19 +186,47 @@ public abstract class TypeDeclaration<T extends Node> extends BodyDeclaration<T>
     }
 
     /**
+     * @return methods or constructors whose signatures match the passed signature.
+     */
+    public List<CallableDeclaration<?>> getCallablesWithSignature(CallableDeclaration.Signature signature) {
+        return getMembers().stream().filter(m -> m instanceof CallableDeclaration).map(m -> ((CallableDeclaration<?>) m)).filter(m -> m.getSignature().equals(signature)).collect(toList());
+    }
+
+    /**
      * @return is this type's parent a TypeDeclaration?
+     * NOTE: many people are confused over terminology. Refer to https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html .
      */
     public boolean isNestedType() {
         return getParentNode().map(p -> p instanceof TypeDeclaration).orElse(false);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public TypeDeclaration<?> clone() {
         return (TypeDeclaration<?>) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public TypeDeclarationMetaModel getMetaModel() {
         return JavaParserMetaModel.typeDeclarationMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        for (int i = 0; i < members.size(); i++) {
+            if (members.get(i) == node) {
+                members.set(i, (BodyDeclaration) replacementNode);
+                return true;
+            }
+        }
+        if (node == name) {
+            setName((SimpleName) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

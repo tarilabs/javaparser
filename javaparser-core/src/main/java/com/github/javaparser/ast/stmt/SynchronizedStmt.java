@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.stmt;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -34,6 +33,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.SynchronizedStmtMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * Usage of the synchronized keyword.
@@ -56,10 +57,13 @@ public final class SynchronizedStmt extends Statement implements NodeWithBlockSt
         this(null, expression, body);
     }
 
-    public SynchronizedStmt(Range range, final Expression expression, final BlockStmt body) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public SynchronizedStmt(TokenRange tokenRange, Expression expression, BlockStmt body) {
+        super(tokenRange);
         setExpression(expression);
         setBody(body);
+        customInitialization();
     }
 
     @Override
@@ -72,10 +76,12 @@ public final class SynchronizedStmt extends Statement implements NodeWithBlockSt
         v.visit(this, arg);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Expression getExpression() {
         return expression;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public SynchronizedStmt setExpression(final Expression expression) {
         assertNotNull(expression);
         if (expression == this.expression) {
@@ -89,12 +95,12 @@ public final class SynchronizedStmt extends Statement implements NodeWithBlockSt
         return this;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public BlockStmt getBody() {
         return body;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public SynchronizedStmt setBody(final BlockStmt body) {
         assertNotNull(body);
         if (body == this.body) {
@@ -109,6 +115,7 @@ public final class SynchronizedStmt extends Statement implements NodeWithBlockSt
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -116,12 +123,30 @@ public final class SynchronizedStmt extends Statement implements NodeWithBlockSt
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public SynchronizedStmt clone() {
         return (SynchronizedStmt) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public SynchronizedStmtMetaModel getMetaModel() {
         return JavaParserMetaModel.synchronizedStmtMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == body) {
+            setBody((BlockStmt) replacementNode);
+            return true;
+        }
+        if (node == expression) {
+            setExpression((Expression) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

@@ -1,6 +1,5 @@
 package com.github.javaparser.ast.modules;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -17,11 +16,13 @@ import com.github.javaparser.metamodel.ModuleDeclarationMetaModel;
 import java.util.Arrays;
 import java.util.List;
 import static com.github.javaparser.utils.Utils.assertNotNull;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * A Java 9 Jigsaw module declaration. <code>@Foo module com.github.abc { requires a.B; }</code>
  */
-public class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclaration>, NodeWithAnnotations<ModuleDeclaration> {
+public final class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclaration>, NodeWithAnnotations<ModuleDeclaration> {
 
     private Name name;
 
@@ -44,12 +45,15 @@ public class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclar
         this(null, annotations, name, isOpen, moduleStmts);
     }
 
-    public ModuleDeclaration(Range range, NodeList<AnnotationExpr> annotations, Name name, boolean isOpen, NodeList<ModuleStmt> moduleStmts) {
-        super(range);
-        setName(name);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public ModuleDeclaration(TokenRange tokenRange, NodeList<AnnotationExpr> annotations, Name name, boolean isOpen, NodeList<ModuleStmt> moduleStmts) {
+        super(tokenRange);
         setAnnotations(annotations);
+        setName(name);
         setOpen(isOpen);
         setModuleStmts(moduleStmts);
+        customInitialization();
     }
 
     @Override
@@ -62,12 +66,12 @@ public class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclar
         v.visit(this, arg);
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Name getName() {
         return name;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ModuleDeclaration setName(final Name name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -81,12 +85,12 @@ public class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclar
         return this;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<AnnotationExpr> getAnnotations() {
         return annotations;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ModuleDeclaration setAnnotations(final NodeList<AnnotationExpr> annotations) {
         assertNotNull(annotations);
         if (annotations == this.annotations) {
@@ -101,11 +105,13 @@ public class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclar
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetNodeListsGenerator")
     public List<NodeList<?>> getNodeLists() {
         return Arrays.asList(getAnnotations(), getModuleStmts());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -124,10 +130,12 @@ public class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclar
         return super.remove(node);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public boolean isOpen() {
         return isOpen;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ModuleDeclaration setOpen(final boolean isOpen) {
         if (isOpen == this.isOpen) {
             return (ModuleDeclaration) this;
@@ -137,10 +145,12 @@ public class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclar
         return this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<ModuleStmt> getModuleStmts() {
         return moduleStmts;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ModuleDeclaration setModuleStmts(final NodeList<ModuleStmt> moduleStmts) {
         assertNotNull(moduleStmts);
         if (moduleStmts == this.moduleStmts) {
@@ -155,12 +165,38 @@ public class ModuleDeclaration extends Node implements NodeWithName<ModuleDeclar
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public ModuleDeclaration clone() {
         return (ModuleDeclaration) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public ModuleDeclarationMetaModel getMetaModel() {
         return JavaParserMetaModel.moduleDeclarationMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        for (int i = 0; i < annotations.size(); i++) {
+            if (annotations.get(i) == node) {
+                annotations.set(i, (AnnotationExpr) replacementNode);
+                return true;
+            }
+        }
+        for (int i = 0; i < moduleStmts.size(); i++) {
+            if (moduleStmts.get(i) == node) {
+                moduleStmts.set(i, (ModuleStmt) replacementNode);
+                return true;
+            }
+        }
+        if (node == name) {
+            setName((Name) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

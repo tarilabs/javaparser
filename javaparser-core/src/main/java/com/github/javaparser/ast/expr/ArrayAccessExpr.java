@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.expr;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.visitor.GenericVisitor;
@@ -30,6 +29,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.ArrayAccessExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * Array brackets [] being used to get a value from an array.
@@ -52,10 +53,13 @@ public final class ArrayAccessExpr extends Expression {
         this(null, name, index);
     }
 
-    public ArrayAccessExpr(Range range, Expression name, Expression index) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public ArrayAccessExpr(TokenRange tokenRange, Expression name, Expression index) {
+        super(tokenRange);
         setName(name);
         setIndex(index);
+        customInitialization();
     }
 
     @Override
@@ -68,14 +72,17 @@ public final class ArrayAccessExpr extends Expression {
         v.visit(this, arg);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Expression getIndex() {
         return index;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Expression getName() {
         return name;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ArrayAccessExpr setIndex(final Expression index) {
         assertNotNull(index);
         if (index == this.index) {
@@ -89,6 +96,7 @@ public final class ArrayAccessExpr extends Expression {
         return this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ArrayAccessExpr setName(final Expression name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -103,6 +111,7 @@ public final class ArrayAccessExpr extends Expression {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -110,12 +119,30 @@ public final class ArrayAccessExpr extends Expression {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public ArrayAccessExpr clone() {
         return (ArrayAccessExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public ArrayAccessExprMetaModel getMetaModel() {
         return JavaParserMetaModel.arrayAccessExprMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == index) {
+            setIndex((Expression) replacementNode);
+            return true;
+        }
+        if (node == name) {
+            setName((Expression) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

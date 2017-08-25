@@ -28,8 +28,8 @@ import com.github.javaparser.ast.comments.Comment;
  * Represent the position of a child node in the NodeText of its parent.
  */
 class ChildTextElement extends TextElement {
-    private LexicalPreservingPrinter lexicalPreservingPrinter;
-    private Node child;
+    private final LexicalPreservingPrinter lexicalPreservingPrinter;
+    private final Node child;
 
     ChildTextElement(LexicalPreservingPrinter lexicalPreservingPrinter, Node child) {
         this.lexicalPreservingPrinter = lexicalPreservingPrinter;
@@ -102,4 +102,8 @@ class ChildTextElement extends TextElement {
         return child instanceof Comment;
     }
 
+    @Override
+    public boolean isChildOfClass(Class<? extends Node> nodeClass) {
+        return nodeClass.isInstance(child);
+    }
 }

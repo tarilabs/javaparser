@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.expr;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.visitor.GenericVisitor;
@@ -29,6 +28,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.BooleanLiteralExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * The boolean literals.
@@ -50,9 +51,12 @@ public final class BooleanLiteralExpr extends LiteralExpr {
         this(null, value);
     }
 
-    public BooleanLiteralExpr(Range range, boolean value) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public BooleanLiteralExpr(TokenRange tokenRange, boolean value) {
+        super(tokenRange);
         setValue(value);
+        customInitialization();
     }
 
     @Override
@@ -65,10 +69,12 @@ public final class BooleanLiteralExpr extends LiteralExpr {
         v.visit(this, arg);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public boolean getValue() {
         return value;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public BooleanLiteralExpr setValue(final boolean value) {
         if (value == this.value) {
             return (BooleanLiteralExpr) this;
@@ -79,6 +85,7 @@ public final class BooleanLiteralExpr extends LiteralExpr {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -86,12 +93,22 @@ public final class BooleanLiteralExpr extends LiteralExpr {
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public BooleanLiteralExpr clone() {
         return (BooleanLiteralExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public BooleanLiteralExprMetaModel getMetaModel() {
         return JavaParserMetaModel.booleanLiteralExprMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        return super.replace(node, replacementNode);
     }
 }

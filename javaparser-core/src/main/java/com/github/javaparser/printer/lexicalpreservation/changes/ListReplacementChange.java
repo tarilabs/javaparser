@@ -3,22 +3,21 @@ package com.github.javaparser.printer.lexicalpreservation.changes;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.observer.ObservableProperty;
+import com.github.javaparser.utils.Pair;
+
+import java.util.Optional;
 
 /**
  * The replacement of an element in a list.
  */
 public class ListReplacementChange implements Change {
-    private ObservableProperty observableProperty;
-    private NodeList nodeList;
-    private int index;
-    private Node oldValue;
-    private Node newValue;
+    private final ObservableProperty observableProperty;
+    private final int index;
+    private final Node newValue;
 
-    public ListReplacementChange(ObservableProperty observableProperty, NodeList nodeList, int index, Node oldValue, Node newValue) {
+    public ListReplacementChange(ObservableProperty observableProperty, int index, Node newValue) {
         this.observableProperty = observableProperty;
-        this.nodeList = nodeList;
         this.index = index;
-        this.oldValue = oldValue;
         this.newValue = newValue;
     }
 
@@ -26,7 +25,15 @@ public class ListReplacementChange implements Change {
     public Object getValue(ObservableProperty property, Node node) {
         if (property == observableProperty) {
             NodeList nodeList = new NodeList();
-            NodeList currentNodeList = (NodeList)(new NoChange().getValue(property, node));
+            Object currentRawValue = new NoChange().getValue(property, node);
+            if (currentRawValue instanceof Optional) {
+                Optional optional = (Optional)currentRawValue;
+                currentRawValue = optional.orElseGet(null);
+            }
+            if (!(currentRawValue instanceof NodeList)){
+                throw new IllegalStateException("Expected NodeList, found " + currentRawValue.getClass().getCanonicalName());
+            }
+            NodeList currentNodeList = (NodeList)currentRawValue;
             nodeList.addAll(currentNodeList);
             nodeList.set(index, newValue);
             return nodeList;

@@ -55,4 +55,8 @@ public abstract class TextElement implements TextElementMatcher {
         return isWhiteSpace() || isComment();
     }
 
+    /**
+     * Is this TextElement representing a child of the given class?
+     */
+    public abstract boolean isChildOfClass(Class<? extends Node> nodeClass);
 }

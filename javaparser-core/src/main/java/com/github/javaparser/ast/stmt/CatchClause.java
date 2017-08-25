@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.stmt;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
@@ -38,6 +37,8 @@ import static com.github.javaparser.utils.Utils.assertNotNull;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.CatchClauseMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * The catch part of a try-catch-finally. <br/>In <code>try { ... } catch (Exception e) { ... }</code> the CatchClause
@@ -64,10 +65,13 @@ public final class CatchClause extends Node implements NodeWithBlockStmt<CatchCl
         this(null, parameter, body);
     }
 
-    public CatchClause(final Range range, final Parameter parameter, final BlockStmt body) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public CatchClause(TokenRange tokenRange, Parameter parameter, BlockStmt body) {
+        super(tokenRange);
         setParameter(parameter);
         setBody(body);
+        customInitialization();
     }
 
     @Override
@@ -85,10 +89,12 @@ public final class CatchClause extends Node implements NodeWithBlockStmt<CatchCl
      * catch(@X A a |...) are found directly in the Parameter. Annotations that are on the second or later type -
      * catch(A a | @X B b ...) are found on those types.
      */
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Parameter getParameter() {
         return parameter;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public CatchClause setParameter(final Parameter parameter) {
         assertNotNull(parameter);
         if (parameter == this.parameter) {
@@ -102,12 +108,12 @@ public final class CatchClause extends Node implements NodeWithBlockStmt<CatchCl
         return this;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public BlockStmt getBody() {
         return body;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public CatchClause setBody(final BlockStmt body) {
         assertNotNull(body);
         if (body == this.body) {
@@ -122,6 +128,7 @@ public final class CatchClause extends Node implements NodeWithBlockStmt<CatchCl
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -129,12 +136,30 @@ public final class CatchClause extends Node implements NodeWithBlockStmt<CatchCl
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public CatchClause clone() {
         return (CatchClause) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public CatchClauseMetaModel getMetaModel() {
         return JavaParserMetaModel.catchClauseMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == body) {
+            setBody((BlockStmt) replacementNode);
+            return true;
+        }
+        if (node == parameter) {
+            setParameter((Parameter) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

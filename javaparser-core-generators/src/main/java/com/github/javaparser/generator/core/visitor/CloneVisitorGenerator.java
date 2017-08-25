@@ -1,6 +1,5 @@
 package com.github.javaparser.generator.core.visitor;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -22,6 +21,8 @@ public class CloneVisitorGenerator extends VisitorGenerator {
 
     @Override
     protected void generateVisitMethodBody(BaseNodeMetaModel node, MethodDeclaration visitMethod, CompilationUnit compilationUnit) {
+        visitMethod.getParameters().forEach(p -> p.setFinal(true));
+
         BlockStmt body = visitMethod.getBody().get();
         body.getStatements().clear();
 
@@ -39,7 +40,7 @@ public class CloneVisitorGenerator extends VisitorGenerator {
         }
 
         SeparatedItemStringBuilder builder = new SeparatedItemStringBuilder(f("%s r = new %s(", node.getTypeNameGenerified(), node.getTypeNameGenerified()), ",", ");");
-        builder.append("n.getRange().orElse(null)");
+        builder.append("n.getTokenRange().orElse(null)");
         for (PropertyMetaModel field : node.getConstructorParameters()) {
             if (field.getName().equals("comment")) {
                 continue;

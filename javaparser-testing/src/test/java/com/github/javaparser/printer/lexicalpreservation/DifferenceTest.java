@@ -14,7 +14,9 @@ import com.github.javaparser.ast.type.ArrayType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.printer.ConcreteSyntaxModel;
 import com.github.javaparser.printer.concretesyntaxmodel.CsmElement;
+import com.github.javaparser.printer.concretesyntaxmodel.CsmIndent;
 import com.github.javaparser.printer.concretesyntaxmodel.CsmToken;
+import com.github.javaparser.printer.concretesyntaxmodel.CsmUnindent;
 import com.github.javaparser.printer.lexicalpreservation.LexicalDifferenceCalculator.CsmChild;
 import org.junit.Test;
 
@@ -23,8 +25,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 
-import static com.github.javaparser.TokenTypes.eolToken;
-import static com.github.javaparser.TokenTypes.spaceToken;
+import static com.github.javaparser.TokenTypes.eolTokenKind;
+import static com.github.javaparser.TokenTypes.spaceTokenKind;
 import static com.github.javaparser.printer.lexicalpreservation.Difference.DifferenceElement.*;
 import static org.junit.Assert.assertEquals;
 
@@ -45,13 +47,10 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
 
         LexicalDifferenceCalculator.CalculatedSyntaxModel a = new LexicalDifferenceCalculator.CalculatedSyntaxModel(Collections.emptyList());
         LexicalDifferenceCalculator.CalculatedSyntaxModel b = new LexicalDifferenceCalculator.CalculatedSyntaxModel(Arrays.asList(
-                new CsmElement[]{
-                        new CsmToken(GeneratedJavaParserConstants.LPAREN),
-                        new CsmChild(n1),
-                        new CsmToken(GeneratedJavaParserConstants.RPAREN),
-                        new CsmChild(n2)
-                }
-        ));
+                new CsmToken(GeneratedJavaParserConstants.LPAREN),
+                new CsmChild(n1),
+                new CsmToken(GeneratedJavaParserConstants.RPAREN),
+                new CsmChild(n2)));
         Difference diff = Difference.calculate(a, b);
         assertEquals(4, diff.getElements().size());
         assertEquals(added(new CsmToken(GeneratedJavaParserConstants.LPAREN)), diff.getElements().get(0));
@@ -66,13 +65,10 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         Node n2 = new MethodDeclaration();
 
         LexicalDifferenceCalculator.CalculatedSyntaxModel a = new LexicalDifferenceCalculator.CalculatedSyntaxModel(Arrays.asList(
-                new CsmElement[]{
-                        new CsmToken(GeneratedJavaParserConstants.LPAREN),
-                        new CsmChild(n1),
-                        new CsmToken(GeneratedJavaParserConstants.RPAREN),
-                        new CsmChild(n2)
-                }
-        ));
+                new CsmToken(GeneratedJavaParserConstants.LPAREN),
+                new CsmChild(n1),
+                new CsmToken(GeneratedJavaParserConstants.RPAREN),
+                new CsmChild(n2)));
         LexicalDifferenceCalculator.CalculatedSyntaxModel b = new LexicalDifferenceCalculator.CalculatedSyntaxModel(Collections.emptyList());
         Difference diff = Difference.calculate(a, b);
         assertEquals(4, diff.getElements().size());
@@ -93,7 +89,7 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         assertEquals(3, diff.getElements().size());
         assertEquals(added(new CsmChild(packageDeclaration)), diff.getElements().get(0));
         assertEquals(kept(new CsmChild(cu.getType(0))), diff.getElements().get(1));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(2));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(2));
     }
 
     @Test
@@ -104,28 +100,29 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmOriginal = new LexicalDifferenceCalculator().calculatedSyntaxModelForNode(element, annotationDeclaration);
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmChanged = new LexicalDifferenceCalculator().calculatedSyntaxModelAfterPropertyChange(element, annotationDeclaration, ObservableProperty.MODIFIERS, EnumSet.noneOf(Modifier.class), EnumSet.of(Modifier.PUBLIC));
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
+        diff.removeIndentationElements();
         int i = 0;
         assertEquals(added(new CsmToken(GeneratedJavaParserConstants.PUBLIC)), diff.getElements().get(i++));
-        assertEquals(added(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(added(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.AT)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.INTERFACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getName())), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.LBRACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(0))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(1))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(2))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(3))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(4))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(5))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.RBRACE)), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
@@ -140,27 +137,28 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmChanged = new LexicalDifferenceCalculator().calculatedSyntaxModelAfterPropertyChange(element, annotationDeclaration, ObservableProperty.NAME,
                 annotationDeclaration.getName(), newName);
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
+        diff.removeIndentationElements();
         int i = 0;
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.AT)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.INTERFACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(removed(new CsmChild(annotationDeclaration.getName())), diff.getElements().get(i++));
         assertEquals(added(new CsmChild(newName)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.LBRACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(0))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(1))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(2))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(3))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(4))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(5))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.RBRACE)), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
@@ -174,28 +172,29 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmOriginal = new LexicalDifferenceCalculator().calculatedSyntaxModelForNode(element, annotationDeclaration);
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmChanged = new LexicalDifferenceCalculator().calculatedSyntaxModelAfterPropertyChange(element, annotationDeclaration, ObservableProperty.COMMENT, null, comment);
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
+        diff.removeIndentationElements();
         int i = 0;
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.PUBLIC)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.AT)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.INTERFACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getName())), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.LBRACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(0))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(1))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(2))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(3))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(4))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(5))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.RBRACE)), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
@@ -208,28 +207,29 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmOriginal = new LexicalDifferenceCalculator().calculatedSyntaxModelForNode(element, annotationDeclaration);
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmChanged = new LexicalDifferenceCalculator().calculatedSyntaxModelAfterPropertyChange(element, annotationDeclaration, ObservableProperty.COMMENT, annotationDeclaration.getComment().get(), null);
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
+        diff.removeIndentationElements();
         int i = 0;
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.PUBLIC)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.AT)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.INTERFACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getName())), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.LBRACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(0))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(1))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(2))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(3))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(4))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(5))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.RBRACE)), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
@@ -242,28 +242,29 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmOriginal = new LexicalDifferenceCalculator().calculatedSyntaxModelForNode(element, annotationDeclaration);
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmChanged = new LexicalDifferenceCalculator().calculatedSyntaxModelAfterPropertyChange(element, annotationDeclaration, ObservableProperty.MODIFIERS, EnumSet.of(Modifier.PUBLIC), EnumSet.noneOf(Modifier.class));
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
+        diff.removeIndentationElements();
         int i = 0;
         assertEquals(removed(new CsmToken(GeneratedJavaParserConstants.PUBLIC)), diff.getElements().get(i++));
-        assertEquals(removed(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(removed(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.AT)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.INTERFACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getName())), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.LBRACE)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(0))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(1))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(2))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(3))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(4))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(annotationDeclaration.getMember(5))), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.RBRACE)), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
@@ -276,13 +277,13 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
         int i = 0;
         assertEquals(kept(new CsmChild(md.getType())), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(md.getName())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.LPAREN)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.RPAREN)), diff.getElements().get(i++));
-        assertEquals(removed(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(removed(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(removed(new CsmToken(GeneratedJavaParserConstants._DEFAULT)), diff.getElements().get(i++));
-        assertEquals(removed(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(removed(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(removed(new CsmChild(md.getDefaultValue().get())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.SEMICOLON)), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
@@ -297,13 +298,13 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
         int i = 0;
         assertEquals(kept(new CsmChild(md.getType())), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(md.getName())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.LPAREN)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.RPAREN)), diff.getElements().get(i++));
-        assertEquals(added(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(added(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(added(new CsmToken(GeneratedJavaParserConstants._DEFAULT)), diff.getElements().get(i++));
-        assertEquals(added(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(added(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(added(new CsmChild(defaultValue)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.SEMICOLON)), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
@@ -318,11 +319,11 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
         int i = 0;
         assertEquals(added(new CsmToken(GeneratedJavaParserConstants.PUBLIC)), diff.getElements().get(i++));
-        assertEquals(added(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(added(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(cd.getName())), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.LPAREN)), diff.getElements().get(i++));
         assertEquals(kept(new CsmToken(GeneratedJavaParserConstants.RPAREN)), diff.getElements().get(i++));
-        assertEquals(kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(kept(new CsmChild(cd.getBody())), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
@@ -355,9 +356,11 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
         int i = 0;
         assertEquals(Difference.DifferenceElement.kept(new CsmToken(GeneratedJavaParserConstants.LBRACE)), diff.getElements().get(i++));
-        assertEquals(Difference.DifferenceElement.kept(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.kept(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.added(new CsmIndent()), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.added(new CsmChild(s)), diff.getElements().get(i++));
-        assertEquals(Difference.DifferenceElement.added(new CsmToken(eolToken())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.added(new CsmToken(eolTokenKind())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.added(new CsmUnindent()), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmToken(GeneratedJavaParserConstants.RBRACE)), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
@@ -366,18 +369,18 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
     public void methodDeclarationRemovingParameter() {
         MethodDeclaration md = considerMd("public void foo(float f){}");
         LexicalDifferenceCalculator.CalculatedSyntaxModel csmOriginal = new LexicalDifferenceCalculator().calculatedSyntaxModelForNode(md);
-        LexicalDifferenceCalculator.CalculatedSyntaxModel csmChanged = new LexicalDifferenceCalculator().calculatedSyntaxModelAfterListRemoval(md, ObservableProperty.PARAMETERS, 0, md.getParameter(0));
+        LexicalDifferenceCalculator.CalculatedSyntaxModel csmChanged = new LexicalDifferenceCalculator().calculatedSyntaxModelAfterListRemoval(md, ObservableProperty.PARAMETERS, 0);
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
         int i = 0;
         assertEquals(Difference.DifferenceElement.kept(new CsmToken(GeneratedJavaParserConstants.PUBLIC)), diff.getElements().get(i++));
-        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmChild(md.getType())), diff.getElements().get(i++));
-        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmChild(md.getName())), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmToken(GeneratedJavaParserConstants.LPAREN)), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.removed(new CsmChild(md.getParameter(0))), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmToken(GeneratedJavaParserConstants.RPAREN)), diff.getElements().get(i++));
-        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmChild(md.getBody().get())), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
@@ -391,34 +394,34 @@ public class DifferenceTest extends AbstractLexicalPreservingTest {
         Difference diff = Difference.calculate(csmOriginal, csmChanged);
         int i = 0;
         assertEquals(Difference.DifferenceElement.kept(new CsmToken(GeneratedJavaParserConstants.PUBLIC)), diff.getElements().get(i++));
-        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmChild(md.getType())), diff.getElements().get(i++));
-        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmChild(md.getName())), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmToken(GeneratedJavaParserConstants.LPAREN)), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.added(new CsmChild(newParameter)), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmToken(GeneratedJavaParserConstants.RPAREN)), diff.getElements().get(i++));
-        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceToken())), diff.getElements().get(i++));
+        assertEquals(Difference.DifferenceElement.kept(new CsmToken(spaceTokenKind())), diff.getElements().get(i++));
         assertEquals(Difference.DifferenceElement.kept(new CsmChild(md.getBody().get())), diff.getElements().get(i++));
         assertEquals(i, diff.getElements().size());
     }
 
-    protected AnnotationMemberDeclaration considerAmd(String code) {
+    private AnnotationMemberDeclaration considerAmd(String code) {
         considerCode("@interface AD { " + code + " }");
         return (AnnotationMemberDeclaration)cu.getAnnotationDeclarationByName("AD").get().getMember(0);
     }
 
-    protected ConstructorDeclaration considerCd(String code) {
+    private ConstructorDeclaration considerCd(String code) {
         considerCode("class A { " + code + " }");
         return (ConstructorDeclaration) cu.getType(0).getMembers().get(0);
     }
 
-    protected EnumConstantDeclaration considerEcd(String code) {
+    private EnumConstantDeclaration considerEcd(String code) {
         considerCode("enum A { " + code + " }");
         return ((EnumDeclaration)cu.getType(0)).getEntries().get(0);
     }
 
-    protected MethodDeclaration considerMd(String code) {
+    private MethodDeclaration considerMd(String code) {
         considerCode("class A { " + code + " }");
         return (MethodDeclaration) cu.getType(0).getMembers().get(0);
     }

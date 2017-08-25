@@ -20,7 +20,9 @@
  */
 package com.github.javaparser.ast.expr;
 
-import com.github.javaparser.Range;
+import javax.annotation.Generated;
+
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.nodeTypes.NodeWithExpression;
@@ -33,6 +35,7 @@ import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.metamodel.CastExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
 /**
@@ -55,10 +58,13 @@ public class CastExpr extends Expression implements NodeWithType<CastExpr, Type>
         this(null, type, expression);
     }
 
-    public CastExpr(Range range, Type type, Expression expression) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public CastExpr(TokenRange tokenRange, Type type, Expression expression) {
+        super(tokenRange);
         setType(type);
         setExpression(expression);
+        customInitialization();
     }
 
     @Override
@@ -71,17 +77,17 @@ public class CastExpr extends Expression implements NodeWithType<CastExpr, Type>
         v.visit(this, arg);
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Expression getExpression() {
         return expression;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Type getType() {
         return type;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public CastExpr setExpression(final Expression expression) {
         assertNotNull(expression);
         if (expression == this.expression) {
@@ -95,7 +101,7 @@ public class CastExpr extends Expression implements NodeWithType<CastExpr, Type>
         return this;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public CastExpr setType(final Type type) {
         assertNotNull(type);
         if (type == this.type) {
@@ -110,6 +116,7 @@ public class CastExpr extends Expression implements NodeWithType<CastExpr, Type>
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -117,12 +124,30 @@ public class CastExpr extends Expression implements NodeWithType<CastExpr, Type>
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public CastExpr clone() {
         return (CastExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public CastExprMetaModel getMetaModel() {
         return JavaParserMetaModel.castExprMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == expression) {
+            setExpression((Expression) replacementNode);
+            return true;
+        }
+        if (node == type) {
+            setType((Type) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

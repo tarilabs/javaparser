@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
@@ -35,6 +34,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.PackageDeclarationMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * A package declaration.
@@ -62,10 +63,13 @@ public final class PackageDeclaration extends Node implements NodeWithAnnotation
         this(null, annotations, name);
     }
 
-    public PackageDeclaration(Range range, NodeList<AnnotationExpr> annotations, Name name) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public PackageDeclaration(TokenRange tokenRange, NodeList<AnnotationExpr> annotations, Name name) {
+        super(tokenRange);
         setAnnotations(annotations);
         setName(name);
+        customInitialization();
     }
 
     @Override
@@ -84,7 +88,7 @@ public final class PackageDeclaration extends Node implements NodeWithAnnotation
      *
      * @return list of annotations or <code>null</code>
      */
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<AnnotationExpr> getAnnotations() {
         return annotations;
     }
@@ -94,7 +98,7 @@ public final class PackageDeclaration extends Node implements NodeWithAnnotation
      *
      * @return the name of the package
      */
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Name getName() {
         return name;
     }
@@ -102,7 +106,7 @@ public final class PackageDeclaration extends Node implements NodeWithAnnotation
     /**
      * @param annotations the annotations to set
      */
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public PackageDeclaration setAnnotations(final NodeList<AnnotationExpr> annotations) {
         assertNotNull(annotations);
         if (annotations == this.annotations) {
@@ -121,7 +125,7 @@ public final class PackageDeclaration extends Node implements NodeWithAnnotation
      *
      * @param name the name to set
      */
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public PackageDeclaration setName(final Name name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -136,11 +140,13 @@ public final class PackageDeclaration extends Node implements NodeWithAnnotation
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetNodeListsGenerator")
     public List<NodeList<?>> getNodeLists() {
         return Arrays.asList(getAnnotations());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -154,12 +160,32 @@ public final class PackageDeclaration extends Node implements NodeWithAnnotation
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public PackageDeclaration clone() {
         return (PackageDeclaration) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public PackageDeclarationMetaModel getMetaModel() {
         return JavaParserMetaModel.packageDeclarationMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        for (int i = 0; i < annotations.size(); i++) {
+            if (annotations.get(i) == node) {
+                annotations.set(i, (AnnotationExpr) replacementNode);
+                return true;
+            }
+        }
+        if (node == name) {
+            setName((Name) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

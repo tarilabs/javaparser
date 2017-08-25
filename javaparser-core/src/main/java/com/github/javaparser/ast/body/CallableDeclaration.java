@@ -20,27 +20,35 @@
  */
 package com.github.javaparser.ast.body;
 
-import com.github.javaparser.Range;
+import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.nodeTypes.*;
+import com.github.javaparser.ast.nodeTypes.modifiers.*;
 import com.github.javaparser.ast.observer.ObservableProperty;
+import com.github.javaparser.ast.type.ArrayType;
 import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
+import com.github.javaparser.ast.visitor.CloneVisitor;
+import com.github.javaparser.metamodel.CallableDeclarationMetaModel;
+import com.github.javaparser.metamodel.JavaParserMetaModel;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import static com.github.javaparser.utils.Utils.assertNotNull;
-import com.github.javaparser.ast.visitor.CloneVisitor;
-import com.github.javaparser.metamodel.CallableDeclarationMetaModel;
-import com.github.javaparser.metamodel.JavaParserMetaModel;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * Represents a declaration which is callable eg. a method or a constructor.
  */
-public abstract class CallableDeclaration<T extends Node> extends BodyDeclaration<T> {
+public abstract class CallableDeclaration<T extends CallableDeclaration<?>> extends BodyDeclaration<T> implements NodeWithAccessModifiers<T>, NodeWithDeclaration, NodeWithSimpleName<T>, NodeWithParameters<T>, NodeWithThrownExceptions<T>, NodeWithTypeParameters<T>, NodeWithJavadoc<T>, NodeWithAbstractModifier<T>, NodeWithStaticModifier<T>, NodeWithFinalModifier<T>, NodeWithStrictfpModifier<T> {
 
     private EnumSet<Modifier> modifiers;
 
@@ -50,15 +58,23 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
 
     private NodeList<Parameter> parameters;
 
-    private NodeList<ReferenceType<?>> thrownExceptions;
+    private NodeList<ReferenceType> thrownExceptions;
 
-    public CallableDeclaration(Range range, EnumSet<Modifier> modifiers, NodeList<AnnotationExpr> annotations, NodeList<TypeParameter> typeParameters, SimpleName name, NodeList<Parameter> parameters, NodeList<ReferenceType<?>> thrownExceptions) {
-        super(range, annotations);
+    @AllFieldsConstructor
+    public CallableDeclaration(EnumSet<Modifier> modifiers, NodeList<AnnotationExpr> annotations, NodeList<TypeParameter> typeParameters, SimpleName name, NodeList<Parameter> parameters, NodeList<ReferenceType> thrownExceptions) {
+        this(null, modifiers, annotations, typeParameters, name, parameters, thrownExceptions);
+    }
+
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public CallableDeclaration(TokenRange tokenRange, EnumSet<Modifier> modifiers, NodeList<AnnotationExpr> annotations, NodeList<TypeParameter> typeParameters, SimpleName name, NodeList<Parameter> parameters, NodeList<ReferenceType> thrownExceptions) {
+        super(tokenRange, annotations);
         setModifiers(modifiers);
         setTypeParameters(typeParameters);
         setName(name);
         setParameters(parameters);
         setThrownExceptions(thrownExceptions);
+        customInitialization();
     }
 
     /**
@@ -67,10 +83,13 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
      * @return modifiers
      * @see Modifier
      */
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public EnumSet<Modifier> getModifiers() {
         return modifiers;
     }
 
+    @SuppressWarnings("unchecked")
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public T setModifiers(final EnumSet<Modifier> modifiers) {
         assertNotNull(modifiers);
         if (modifiers == this.modifiers) {
@@ -81,10 +100,13 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
         return (T) this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public SimpleName getName() {
         return name;
     }
 
+    @SuppressWarnings("unchecked")
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public T setName(final SimpleName name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -98,10 +120,13 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
         return (T) this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<Parameter> getParameters() {
         return parameters;
     }
 
+    @SuppressWarnings("unchecked")
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public T setParameters(final NodeList<Parameter> parameters) {
         assertNotNull(parameters);
         if (parameters == this.parameters) {
@@ -115,11 +140,14 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
         return (T) this;
     }
 
-    public NodeList<ReferenceType<?>> getThrownExceptions() {
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public NodeList<ReferenceType> getThrownExceptions() {
         return thrownExceptions;
     }
 
-    public T setThrownExceptions(final NodeList<ReferenceType<?>> thrownExceptions) {
+    @SuppressWarnings("unchecked")
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public T setThrownExceptions(final NodeList<ReferenceType> thrownExceptions) {
         assertNotNull(thrownExceptions);
         if (thrownExceptions == this.thrownExceptions) {
             return (T) this;
@@ -132,10 +160,13 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
         return (T) this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<TypeParameter> getTypeParameters() {
         return typeParameters;
     }
 
+    @SuppressWarnings("unchecked")
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public T setTypeParameters(final NodeList<TypeParameter> typeParameters) {
         assertNotNull(typeParameters);
         if (typeParameters == this.typeParameters) {
@@ -163,7 +194,7 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
         StringBuilder sb = new StringBuilder();
         if (includingThrows) {
             boolean firstThrow = true;
-            for (ReferenceType<?> thr : getThrownExceptions()) {
+            for (ReferenceType thr : getThrownExceptions()) {
                 if (firstThrow) {
                     firstThrow = false;
                     sb.append(" throws ");
@@ -182,6 +213,7 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -206,13 +238,129 @@ public abstract class CallableDeclaration<T extends Node> extends BodyDeclaratio
         return super.remove(node);
     }
 
+    /**
+     * A method or constructor signature.
+     * <p/>Note that since JavaParser has no real knowledge of types - only the text found in the source file - using
+     * this will fail in some cases. (java.util.String != String for example, and generics are not taken into account.)
+     */
+    public static class Signature {
+
+        private final String name;
+
+        private final List<Type> parameterTypes;
+
+        private Signature(String name, List<Type> parameterTypes) {
+            this.name = name;
+            this.parameterTypes = parameterTypes;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<Type> getParameterTypes() {
+            return parameterTypes;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            Signature signature = (Signature) o;
+            if (!name.equals(signature.name))
+                return false;
+            if (!parameterTypes.equals(signature.parameterTypes))
+                return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = name.hashCode();
+            result = 31 * result + parameterTypes.hashCode();
+            return result;
+        }
+
+        public String asString() {
+            return parameterTypes.stream().map(Type::asString).collect(joining(", ", name + "(", ")"));
+        }
+
+        @Override
+        public String toString() {
+            return asString();
+        }
+    }
+
+    public Signature getSignature() {
+        return new Signature(getName().getIdentifier(), getParameters().stream().map(this::getTypeWithVarargsAsArray).map(this::stripGenerics).map(this::stripAnnotations).collect(toList()));
+    }
+
+    private Type stripAnnotations(Type type) {
+        if (type instanceof NodeWithAnnotations) {
+            ((NodeWithAnnotations) type).setAnnotations(new NodeList<>());
+        }
+        return type;
+    }
+
+    private Type stripGenerics(Type type) {
+        if (type instanceof NodeWithTypeArguments) {
+            ((NodeWithTypeArguments) type).setTypeArguments((NodeList<Type>) null);
+        }
+        return type;
+    }
+
+    private Type getTypeWithVarargsAsArray(Parameter p) {
+        /* A signature includes the varargs ellipsis.
+         This is a field on parameter which we lose when we only get the type,
+         so we represent it as an additional [] on the type. */
+        Type t = p.getType().clone();
+        if (p.isVarArgs()) {
+            t = new ArrayType(t);
+        }
+        return t;
+    }
+
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public CallableDeclaration<?> clone() {
         return (CallableDeclaration<?>) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public CallableDeclarationMetaModel getMetaModel() {
         return JavaParserMetaModel.callableDeclarationMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == name) {
+            setName((SimpleName) replacementNode);
+            return true;
+        }
+        for (int i = 0; i < parameters.size(); i++) {
+            if (parameters.get(i) == node) {
+                parameters.set(i, (Parameter) replacementNode);
+                return true;
+            }
+        }
+        for (int i = 0; i < thrownExceptions.size(); i++) {
+            if (thrownExceptions.get(i) == node) {
+                thrownExceptions.set(i, (ReferenceType) replacementNode);
+                return true;
+            }
+        }
+        for (int i = 0; i < typeParameters.size(); i++) {
+            if (typeParameters.get(i) == node) {
+                typeParameters.set(i, (TypeParameter) replacementNode);
+                return true;
+            }
+        }
+        return super.replace(node, replacementNode);
     }
 }

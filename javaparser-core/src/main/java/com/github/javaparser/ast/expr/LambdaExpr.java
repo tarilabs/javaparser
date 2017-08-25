@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.expr;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
@@ -40,6 +39,8 @@ import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.DerivedProperty;
 import com.github.javaparser.metamodel.LambdaExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * A lambda expression. The parameters are on the left side of the ->.
@@ -52,7 +53,7 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
  *
  * @author Raquel Pau
  */
-public class LambdaExpr extends Expression implements NodeWithParameters<LambdaExpr> {
+public final class LambdaExpr extends Expression implements NodeWithParameters<LambdaExpr> {
 
     private NodeList<Parameter> parameters;
 
@@ -69,19 +70,22 @@ public class LambdaExpr extends Expression implements NodeWithParameters<LambdaE
         this(null, parameters, body, isEnclosingParameters);
     }
 
-    public LambdaExpr(Range range, NodeList<Parameter> parameters, Statement body, boolean isEnclosingParameters) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public LambdaExpr(TokenRange tokenRange, NodeList<Parameter> parameters, Statement body, boolean isEnclosingParameters) {
+        super(tokenRange);
         setParameters(parameters);
         setBody(body);
         setEnclosingParameters(isEnclosingParameters);
+        customInitialization();
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NodeList<Parameter> getParameters() {
         return parameters;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public LambdaExpr setParameters(final NodeList<Parameter> parameters) {
         assertNotNull(parameters);
         if (parameters == this.parameters) {
@@ -95,10 +99,12 @@ public class LambdaExpr extends Expression implements NodeWithParameters<LambdaE
         return this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Statement getBody() {
         return body;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public LambdaExpr setBody(final Statement body) {
         assertNotNull(body);
         if (body == this.body) {
@@ -122,10 +128,12 @@ public class LambdaExpr extends Expression implements NodeWithParameters<LambdaE
         v.visit(this, arg);
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public boolean isEnclosingParameters() {
         return isEnclosingParameters;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public LambdaExpr setEnclosingParameters(final boolean isEnclosingParameters) {
         if (isEnclosingParameters == this.isEnclosingParameters) {
             return (LambdaExpr) this;
@@ -136,11 +144,13 @@ public class LambdaExpr extends Expression implements NodeWithParameters<LambdaE
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetNodeListsGenerator")
     public List<NodeList<?>> getNodeLists() {
         return Arrays.asList(getParameters());
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -163,12 +173,32 @@ public class LambdaExpr extends Expression implements NodeWithParameters<LambdaE
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public LambdaExpr clone() {
         return (LambdaExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public LambdaExprMetaModel getMetaModel() {
         return JavaParserMetaModel.lambdaExprMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == body) {
+            setBody((Statement) replacementNode);
+            return true;
+        }
+        for (int i = 0; i < parameters.size(); i++) {
+            if (parameters.get(i) == node) {
+                parameters.set(i, (Parameter) replacementNode);
+                return true;
+            }
+        }
+        return super.replace(node, replacementNode);
     }
 }

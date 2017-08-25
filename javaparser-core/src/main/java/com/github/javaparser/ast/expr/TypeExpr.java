@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast.expr;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.observer.ObservableProperty;
@@ -33,6 +32,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.TypeExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * This class is just instantiated as scopes for MethodReferenceExpr nodes to encapsulate Types.
@@ -41,7 +42,7 @@ import com.github.javaparser.metamodel.JavaParserMetaModel;
  *
  * @author Raquel Pau
  */
-public class TypeExpr extends Expression implements NodeWithType<TypeExpr, Type> {
+public final class TypeExpr extends Expression implements NodeWithType<TypeExpr, Type> {
 
     private Type type;
 
@@ -54,9 +55,12 @@ public class TypeExpr extends Expression implements NodeWithType<TypeExpr, Type>
         this(null, type);
     }
 
-    public TypeExpr(Range range, Type type) {
-        super(range);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public TypeExpr(TokenRange tokenRange, Type type) {
+        super(tokenRange);
         setType(type);
+        customInitialization();
     }
 
     @Override
@@ -69,12 +73,12 @@ public class TypeExpr extends Expression implements NodeWithType<TypeExpr, Type>
         v.visit(this, arg);
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Type getType() {
         return type;
     }
 
-    @Override
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public TypeExpr setType(final Type type) {
         assertNotNull(type);
         if (type == this.type) {
@@ -89,6 +93,7 @@ public class TypeExpr extends Expression implements NodeWithType<TypeExpr, Type>
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -96,12 +101,26 @@ public class TypeExpr extends Expression implements NodeWithType<TypeExpr, Type>
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public TypeExpr clone() {
         return (TypeExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public TypeExprMetaModel getMetaModel() {
         return JavaParserMetaModel.typeExprMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == type) {
+            setType((Type) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

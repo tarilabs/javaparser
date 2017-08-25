@@ -1,6 +1,5 @@
 package com.github.javaparser.generator.core.visitor;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -20,6 +19,8 @@ public class ModifierVisitorGenerator extends VisitorGenerator {
 
     @Override
     protected void generateVisitMethodBody(BaseNodeMetaModel node, MethodDeclaration visitMethod, CompilationUnit compilationUnit) {
+        visitMethod.getParameters().forEach(p -> p.setFinal(true));
+
         BlockStmt body = visitMethod.getBody().get();
         body.getStatements().clear();
 

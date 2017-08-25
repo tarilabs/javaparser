@@ -20,7 +20,6 @@
  */
 package com.github.javaparser.ast;
 
-import com.github.javaparser.Range;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.nodeTypes.NodeWithName;
 import com.github.javaparser.ast.observer.ObservableProperty;
@@ -31,6 +30,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.ImportDeclarationMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
+import javax.annotation.Generated;
+import com.github.javaparser.TokenRange;
 
 /**
  * An import declaration.
@@ -60,11 +61,14 @@ public final class ImportDeclaration extends Node implements NodeWithName<Import
         this(null, name, isStatic, isAsterisk);
     }
 
-    public ImportDeclaration(Range range, Name name, boolean isStatic, boolean isAsterisk) {
-        super(range);
-        setAsterisk(isAsterisk);
+    /**This constructor is used by the parser and is considered private.*/
+    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
+    public ImportDeclaration(TokenRange tokenRange, Name name, boolean isStatic, boolean isAsterisk) {
+        super(tokenRange);
         setName(name);
         setStatic(isStatic);
+        setAsterisk(isAsterisk);
+        customInitialization();
     }
 
     @Override
@@ -80,6 +84,7 @@ public final class ImportDeclaration extends Node implements NodeWithName<Import
     /**
      * Retrieves the name of the import (.* is not included.)
      */
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public Name getName() {
         return name;
     }
@@ -87,14 +92,17 @@ public final class ImportDeclaration extends Node implements NodeWithName<Import
     /**
      * Return if the import ends with "*".
      */
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public boolean isAsterisk() {
         return isAsterisk;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public boolean isStatic() {
         return isStatic;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ImportDeclaration setAsterisk(final boolean isAsterisk) {
         if (isAsterisk == this.isAsterisk) {
             return (ImportDeclaration) this;
@@ -104,6 +112,7 @@ public final class ImportDeclaration extends Node implements NodeWithName<Import
         return this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ImportDeclaration setName(final Name name) {
         assertNotNull(name);
         if (name == this.name) {
@@ -117,6 +126,7 @@ public final class ImportDeclaration extends Node implements NodeWithName<Import
         return this;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public ImportDeclaration setStatic(final boolean isStatic) {
         if (isStatic == this.isStatic) {
             return (ImportDeclaration) this;
@@ -127,6 +137,7 @@ public final class ImportDeclaration extends Node implements NodeWithName<Import
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -134,12 +145,26 @@ public final class ImportDeclaration extends Node implements NodeWithName<Import
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public ImportDeclaration clone() {
         return (ImportDeclaration) accept(new CloneVisitor(), null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public ImportDeclarationMetaModel getMetaModel() {
         return JavaParserMetaModel.importDeclarationMetaModel;
+    }
+
+    @Override
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (node == name) {
+            setName((Name) replacementNode);
+            return true;
+        }
+        return super.replace(node, replacementNode);
     }
 }

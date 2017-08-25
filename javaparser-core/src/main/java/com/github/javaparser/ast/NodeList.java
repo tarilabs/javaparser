@@ -27,11 +27,11 @@ import com.github.javaparser.ast.observer.Observable;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.ast.visitor.VoidVisitor;
+import com.github.javaparser.metamodel.InternalProperty;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 /**
@@ -44,6 +44,7 @@ import java.util.stream.Stream;
  * @param <N> the type of nodes contained.
  */
 public class NodeList<N extends Node> implements List<N>, Iterable<N>, HasParentNode<NodeList<N>>, Visitable, Observable {
+    @InternalProperty
     private List<N> innerList = new ArrayList<>(0);
 
     private Node parentNode;
@@ -94,9 +95,7 @@ public class NodeList<N extends Node> implements List<N>, Iterable<N>, HasParent
 
     public static <X extends Node> NodeList<X> nodeList(Collection<X> nodes) {
         final NodeList<X> nodeList = new NodeList<>();
-        for (X node : nodes) {
-            nodeList.add(node);
-        }
+        nodeList.addAll(nodes);
         return nodeList;
     }
 
@@ -108,11 +107,6 @@ public class NodeList<N extends Node> implements List<N>, Iterable<N>, HasParent
 
     public boolean contains(N node) {
         return innerList.contains(node);
-    }
-
-    @Override
-    public Stream<N> stream() {
-        return innerList.stream();
     }
 
     @Override
@@ -154,7 +148,7 @@ public class NodeList<N extends Node> implements List<N>, Iterable<N>, HasParent
 
     @Override
     public void sort(Comparator<? super N> comparator) {
-        Collections.sort(innerList, comparator);
+        innerList.sort(comparator);
     }
 
     public void addAll(NodeList<N> otherList) {
@@ -451,5 +445,31 @@ public class NodeList<N extends Node> implements List<N>, Iterable<N>, HasParent
      */
     public boolean isNonEmpty() {
         return !isEmpty();
+    }
+
+    public void ifNonEmpty(Consumer<? super NodeList<N>> consumer) {
+        if (isNonEmpty())
+            consumer.accept(this);
+    }
+
+    public static <T extends Node> Collector<T, NodeList<T>, NodeList<T>> toNodeList() {
+        return Collector.of(NodeList::new, NodeList::add, (left, right) -> {
+            left.addAll(right);
+            return left;
+        });
+    }
+
+    private void setAsParentNodeOf(List<? extends Node> childNodes) {
+        if (childNodes != null) {
+            for (HasParentNode current : childNodes) {
+                current.setParentNode(getParentNodeForChildren());
+            }
+        }
+    }
+
+    private void setAsParentNodeOf(Node childNode) {
+        if (childNode != null) {
+            childNode.setParentNode(getParentNodeForChildren());
+        }
     }
 }

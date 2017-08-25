@@ -29,10 +29,12 @@ import java.util.List;
 import java.util.Optional;
 import com.github.javaparser.HasParentNode;
 import com.github.javaparser.Range;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.nodeTypes.NodeWithRange;
+import com.github.javaparser.ast.nodeTypes.NodeWithTokenRange;
 import com.github.javaparser.ast.observer.AstObserver;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.observer.PropagatingAstObserver;
@@ -40,10 +42,13 @@ import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.ast.visitor.EqualsVisitor;
 import com.github.javaparser.ast.visitor.HashCodeVisitor;
 import com.github.javaparser.ast.visitor.Visitable;
+import com.github.javaparser.metamodel.InternalProperty;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.metamodel.NodeMetaModel;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import javax.annotation.Generated;
+import static com.github.javaparser.ast.Node.Parsedness.*;
 import static java.util.Collections.unmodifiableList;
 
 /**
@@ -89,7 +94,7 @@ import static java.util.Collections.unmodifiableList;
  *
  * @author Julio Vilmar Gesser
  */
-public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable, NodeWithRange<Node> {
+public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable, NodeWithRange<Node>, NodeWithTokenRange<Node> {
 
     /**
      * Different registration mode for observers on nodes.
@@ -109,6 +114,11 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
          * automatically registered to be observed.
          */
         SELF_PROPAGATING
+    }
+
+    public enum Parsedness {
+
+        PARSED, UNPARSABLE
     }
 
     /**
@@ -131,22 +141,42 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
 
     protected static final PrettyPrinterConfiguration prettyPrinterNoCommentsConfiguration = new PrettyPrinterConfiguration().setPrintComments(false);
 
+    @InternalProperty
     private Range range;
 
+    @InternalProperty
+    private TokenRange tokenRange;
+
+    @InternalProperty
     private Node parentNode;
 
+    @InternalProperty
     private List<Node> childNodes = new LinkedList<>();
 
+    @InternalProperty
     private List<Comment> orphanComments = new LinkedList<>();
 
+    @InternalProperty
     private IdentityHashMap<DataKey<?>, Object> data = null;
 
     private Comment comment;
 
+    @InternalProperty
     private List<AstObserver> observers = new ArrayList<>();
 
-    public Node(Range range) {
-        this.range = range;
+    @InternalProperty
+    private Parsedness parsed = PARSED;
+
+    protected Node(TokenRange tokenRange) {
+        setTokenRange(tokenRange);
+    }
+
+    /**
+     * Called in every constructor for node specific code.
+     * It can't be written in the constructor itself because it will
+     * be overwritten during code generation.
+     */
+    protected void customInitialization() {
     }
 
     /**
@@ -154,7 +184,8 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
      *
      * @return comment property
      */
-    public final Optional<Comment> getComment() {
+    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
+    public Optional<Comment> getComment() {
         return Optional.ofNullable(comment);
     }
 
@@ -163,6 +194,23 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
      */
     public Optional<Range> getRange() {
         return Optional.ofNullable(range);
+    }
+
+    /**
+     * @return the range of tokens that this node covers.
+     */
+    public Optional<TokenRange> getTokenRange() {
+        return Optional.ofNullable(tokenRange);
+    }
+
+    public Node setTokenRange(TokenRange tokenRange) {
+        this.tokenRange = tokenRange;
+        if (tokenRange == null || !(tokenRange.getBegin().getRange().isPresent() && tokenRange.getBegin().getRange().isPresent())) {
+            range = null;
+        } else {
+            range = new Range(tokenRange.getBegin().getRange().get().begin, tokenRange.getEnd().getRange().get().end);
+        }
+        return this;
     }
 
     /**
@@ -314,31 +362,44 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
      * Assign a new parent to this node, removing it
      * from the list of children of the previous parent, if any.
      *
-     * @param parentNode node to be set as parent
+     * @param newParentNode node to be set as parent
      */
     @Override
-    public Node setParentNode(Node parentNode) {
-        if (parentNode == this.parentNode) {
+    public Node setParentNode(Node newParentNode) {
+        if (newParentNode == parentNode) {
             return this;
         }
-        observers.forEach(o -> o.parentChange(this, this.parentNode, parentNode));
+        observers.forEach(o -> o.parentChange(this, parentNode, newParentNode));
         // remove from old parent, if any
-        if (this.parentNode != null) {
-            this.parentNode.childNodes.remove(this);
+        if (parentNode != null) {
+            final List<Node> parentChildNodes = parentNode.childNodes;
+            for (int i = 0; i < parentChildNodes.size(); i++) {
+                if (parentChildNodes.get(i) == this) {
+                    parentChildNodes.remove(i);
+                }
+            }
         }
-        this.parentNode = parentNode;
+        parentNode = newParentNode;
         // add to new parent, if any
-        if (this.parentNode != null) {
-            this.parentNode.childNodes.add(this);
+        if (parentNode != null) {
+            parentNode.childNodes.add(this);
         }
         return this;
+    }
+
+    protected void setAsParentNodeOf(Node childNode) {
+        if (childNode != null) {
+            childNode.setParentNode(getParentNodeForChildren());
+        }
     }
 
     public static final int ABSOLUTE_BEGIN_LINE = -1;
 
     public static final int ABSOLUTE_END_LINE = -2;
 
-    /** @deprecated use getComment().isPresent() */
+    /**
+     * @deprecated use getComment().isPresent()
+     */
     @Deprecated
     public boolean hasComment() {
         return comment != null;
@@ -359,7 +420,7 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
             if (clazz.isInstance(child)) {
                 nodes.add(clazz.cast(child));
             }
-            nodes.addAll(child.getNodesByType(clazz));
+            nodes.addAll(child.getChildNodesByType(clazz));
         }
         return nodes;
     }
@@ -407,7 +468,7 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
     /**
      * Try to remove this node from the parent
      *
-     * @return true if removed, false otherwise
+     * @return true if removed, false if it is a required property of the parent, or if the parent isn't set.
      * @throws RuntimeException if it fails in an unexpected way
      */
     public boolean remove() {
@@ -415,6 +476,35 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
             return false;
         }
         return parentNode.remove(this);
+    }
+
+    /**
+     * Try to replace this node in the parent with the supplied node.
+     *
+     * @return true if removed, or if the parent isn't set.
+     * @throws RuntimeException if it fails in an unexpected way
+     */
+    public boolean replace(Node node) {
+        if (parentNode == null) {
+            return false;
+        }
+        return parentNode.replace(this, node);
+    }
+
+    /**
+     * Forcibly removes this node from the AST.
+     * If it cannot be removed from the parent with remove(),
+     * it will try to remove its parent instead,
+     * until it finds a node that can be removed,
+     * or no parent can be found.
+     * <p>
+     * Since everything at CompilationUnit level is removable,
+     * this method will only (silently) fail when the node is in a detached AST fragment.
+     */
+    public void removeForced() {
+        if (!remove()) {
+            getParentNode().ifPresent(Node::remove);
+        }
     }
 
     @Override
@@ -489,6 +579,7 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
         return Collections.emptyList();
     }
 
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -501,16 +592,51 @@ public abstract class Node implements Cloneable, HasParentNode<Node>, Visitable,
         return false;
     }
 
+    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public Node removeComment() {
         return setComment((Comment) null);
     }
 
     @Override
+    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public Node clone() {
         return (Node) accept(new CloneVisitor(), null);
     }
 
+    /**
+     * @return get JavaParser specific node introspection information.
+     */
+    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public NodeMetaModel getMetaModel() {
         return JavaParserMetaModel.nodeMetaModel;
+    }
+
+    /**
+     * @return whether this node was successfully parsed or not.
+     * If it was not, only the range and tokenRange fields will be valid. 
+     */
+    public Parsedness getParsed() {
+        return parsed;
+    }
+
+    /**
+     * Used by the parser to flag unparsable nodes.
+     */
+    public Node setParsed(Parsedness parsed) {
+        this.parsed = parsed;
+        return this;
+    }
+
+    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
+    public boolean replace(Node node, Node replacementNode) {
+        if (node == null)
+            return false;
+        if (comment != null) {
+            if (node == comment) {
+                setComment((Comment) replacementNode);
+                return true;
+            }
+        }
+        return false;
     }
 }

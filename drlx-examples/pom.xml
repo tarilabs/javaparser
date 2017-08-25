@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.github.javaparser</groupId>
     <artifactId>javaparser-parent</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.3.3-SNAPSHOT</version>
   </parent>
   
   <groupId>org.drools</groupId>

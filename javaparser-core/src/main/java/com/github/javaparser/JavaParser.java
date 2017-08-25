@@ -24,6 +24,7 @@ package com.github.javaparser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.comments.CommentsCollection;
@@ -35,18 +36,17 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.validator.ProblemReporter;
 import com.github.javaparser.javadoc.Javadoc;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.TreeSet;
 
 import static com.github.javaparser.ParseStart.*;
 import static com.github.javaparser.Problem.PROBLEM_BY_BEGIN_POSITION;
 import static com.github.javaparser.Providers.*;
-import static com.github.javaparser.Range.range;
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
 /**
@@ -111,7 +111,7 @@ public final class JavaParser {
      * The start indicates what can be found in the source code (compilation unit, block, import...)
      *
      * @param start refer to the constants in ParseStart to see what can be parsed.
-     * @param provider refer to Providers to see how you can read source.
+     * @param provider refer to Providers to see how you can read source. The provider will be closed after parsing.
      * @param <N> the subclass of Node that is the result of parsing in the start.
      * @return the parse result, a collection of encountered problems, and some extra data.
      */
@@ -131,11 +131,6 @@ public final class JavaParser {
 
             return new ParseResult<>(resultNode, parser.problems, parser.getTokens(),
                     parser.getCommentsCollection());
-        } catch (ParseException p) {
-            final Token token = p.currentToken;
-            final Range range = range(token.beginLine, token.beginColumn, token.endLine, token.endColumn);
-            parser.problems.add(new Problem(makeMessageForParseException(p), range, p));
-            return new ParseResult<>(null, parser.problems, parser.getTokens(), parser.getCommentsCollection());
         } catch (Exception e) {
             final String message = e.getMessage() == null ? "Unknown error" : e.getMessage();
             parser.problems.add(new Problem(message, null, e));
@@ -150,68 +145,10 @@ public final class JavaParser {
     }
 
     /**
-     * This is the code from ParseException.initialise, modified to be more horizontal.
-     */
-    private String makeMessageForParseException(ParseException exception) {
-        final StringBuilder sb = new StringBuilder("Parse error. Found ");
-        final StringBuilder expected = new StringBuilder();
-
-        int maxExpectedTokenSequenceLength = 0;
-        TreeSet<String> sortedOptions = new TreeSet<>();
-        for (int i = 0; i < exception.expectedTokenSequences.length; i++) {
-            if (maxExpectedTokenSequenceLength < exception.expectedTokenSequences[i].length) {
-                maxExpectedTokenSequenceLength = exception.expectedTokenSequences[i].length;
-            }
-            for (int j = 0; j < exception.expectedTokenSequences[i].length; j++) {
-                sortedOptions.add(exception.tokenImage[exception.expectedTokenSequences[i][j]]);
-            }
-        }
-
-        for (String option : sortedOptions) {
-            expected.append(" ").append(option);
-        }
-
-        sb.append("");
-
-        Token token = exception.currentToken.next;
-        for (int i = 0; i < maxExpectedTokenSequenceLength; i++) {
-            String tokenText = token.image;
-            String escapedTokenText = ParseException.add_escapes(tokenText);
-            if (i != 0) {
-                sb.append(" ");
-            }
-            if (token.kind == 0) {
-                sb.append(exception.tokenImage[0]);
-                break;
-            }
-            escapedTokenText = "\"" + escapedTokenText + "\"";
-            String image = exception.tokenImage[token.kind];
-            if (image.equals(escapedTokenText)) {
-                sb.append(image);
-            } else {
-                sb.append(" ")
-                        .append(escapedTokenText)
-                        .append(" ")
-                        .append(image);
-            }
-            token = token.next;
-        }
-
-        if (exception.expectedTokenSequences.length != 0) {
-            int numExpectedTokens = exception.expectedTokenSequences.length;
-            sb.append(", expected")
-                    .append(numExpectedTokens == 1 ? "" : " one of ")
-                    .append(expected.toString());
-        }
-        return sb.toString();
-
-    }
-
-    /**
      * Parses the Java code contained in the {@link InputStream} and returns a
      * {@link CompilationUnit} that represents it.
      *
-     * @param in {@link InputStream} containing Java source code
+     * @param in {@link InputStream} containing Java source code. It will be closed after parsing.
      * @param encoding encoding of the source code
      * @return CompilationUnit representing the Java source code
      * @throws ParseProblemException if the source code has parser errors
@@ -225,7 +162,7 @@ public final class JavaParser {
      * {@link CompilationUnit} that represents it.<br>
      * Note: Uses UTF-8 encoding
      *
-     * @param in {@link InputStream} containing Java source code
+     * @param in {@link InputStream} containing Java source code. It will be closed after parsing.
      * @return CompilationUnit representing the Java source code
      * @throws ParseProblemException if the source code has parser errors
      */
@@ -237,14 +174,14 @@ public final class JavaParser {
      * Parses the Java code contained in a {@link File} and returns a
      * {@link CompilationUnit} that represents it.
      *
-     * @param file {@link File} containing Java source code
+     * @param file {@link File} containing Java source code. It will be closed after parsing.
      * @param encoding encoding of the source code
      * @return CompilationUnit representing the Java source code
      * @throws ParseProblemException if the source code has parser errors
      * @throws FileNotFoundException the file was not found
      */
     public static CompilationUnit parse(final File file, final Charset encoding) throws FileNotFoundException {
-        return simplifiedParse(COMPILATION_UNIT, provider(file, encoding));
+        return simplifiedParse(COMPILATION_UNIT, provider(file, encoding)).setStorage(file.toPath());
     }
 
     /**
@@ -252,13 +189,13 @@ public final class JavaParser {
      * {@link CompilationUnit} that represents it.<br>
      * Note: Uses UTF-8 encoding
      *
-     * @param file {@link File} containing Java source code
+     * @param file {@link File} containing Java source code. It will be closed after parsing.
      * @return CompilationUnit representing the Java source code
      * @throws ParseProblemException if the source code has parser errors
      * @throws FileNotFoundException the file was not found
      */
     public static CompilationUnit parse(final File file) throws FileNotFoundException {
-        return simplifiedParse(COMPILATION_UNIT, provider(file));
+        return simplifiedParse(COMPILATION_UNIT, provider(file)).setStorage(file.toPath());
     }
 
     /**
@@ -272,7 +209,7 @@ public final class JavaParser {
      * @throws ParseProblemException if the source code has parser errors
      */
     public static CompilationUnit parse(final Path path, final Charset encoding) throws IOException {
-        return simplifiedParse(COMPILATION_UNIT, provider(path, encoding));
+        return simplifiedParse(COMPILATION_UNIT, provider(path, encoding)).setStorage(path);
     }
 
     /**
@@ -286,7 +223,7 @@ public final class JavaParser {
      * @throws IOException the path could not be accessed
      */
     public static CompilationUnit parse(final Path path) throws IOException {
-        return simplifiedParse(COMPILATION_UNIT, provider(path));
+        return simplifiedParse(COMPILATION_UNIT, provider(path)).setStorage(path);
     }
 
     /**
@@ -338,7 +275,7 @@ public final class JavaParser {
      * Parses Java code from a Reader and returns a
      * {@link CompilationUnit} that represents it.<br>
      *
-     * @param reader the reader containing Java source code
+     * @param reader the reader containing Java source code. It will be closed after parsing.
      * @return CompilationUnit representing the Java source code
      * @throws ParseProblemException if the source code has parser errors
      */
@@ -446,9 +383,11 @@ public final class JavaParser {
      * @param body the body of a class
      * @return BodyDeclaration representing the Java class body
      * @throws ParseProblemException if the source code has parser errors
+     * @deprecated just use parseBodyDeclaration now.
      */
+    @Deprecated
     public static BodyDeclaration<?> parseClassBodyDeclaration(String body) {
-        return simplifiedParse(CLASS_BODY, provider(body));
+        return parseBodyDeclaration(body);
     }
 
     /**
@@ -458,13 +397,27 @@ public final class JavaParser {
      * @param body the body of an interface
      * @return BodyDeclaration representing the Java interface body
      * @throws ParseProblemException if the source code has parser errors
+     * @deprecated just use parseBodyDeclaration now.
      */
-    public static BodyDeclaration parseInterfaceBodyDeclaration(String body) {
-        return simplifiedParse(INTERFACE_BODY, provider(body));
+    @Deprecated
+    public static BodyDeclaration<?> parseInterfaceBodyDeclaration(String body) {
+        return parseBodyDeclaration(body);
     }
 
     /**
-     * Parses a Java type name and returns a {@link ClassOrInterfaceType} that represents it.
+     * Parses a Java class or interface body declaration(e.g fields or methods) and returns a
+     * {@link BodyDeclaration} that represents it.
+     *
+     * @param body the body of a class or interface
+     * @return BodyDeclaration representing the Java interface body
+     * @throws ParseProblemException if the source code has parser errors
+     */
+    public static BodyDeclaration<?> parseBodyDeclaration(String body) {
+        return simplifiedParse(CLASS_BODY, provider(body));
+    }
+
+    /**
+     * Parses a Java class or interface type name and returns a {@link ClassOrInterfaceType} that represents it.
      *
      * @param type the type name like a.b.c.X or Y
      * @return ClassOrInterfaceType representing the type
@@ -472,6 +425,17 @@ public final class JavaParser {
      */
     public static ClassOrInterfaceType parseClassOrInterfaceType(String type) {
         return simplifiedParse(CLASS_OR_INTERFACE_TYPE, provider(type));
+    }
+
+    /**
+     * Parses a Java type name and returns a {@link Type} that represents it.
+     *
+     * @param type the type name like a.b.c.X, Y, or int
+     * @return ClassOrInterfaceType representing the type
+     * @throws ParseProblemException if the source code has parser errors
+     */
+    public static Type parseType(String type) {
+        return simplifiedParse(TYPE, provider(type));
     }
 
     /**
@@ -529,6 +493,18 @@ public final class JavaParser {
      */
     public static Parameter parseParameter(String parameter) {
         return simplifiedParse(PARAMETER, provider(parameter));
+    }
+
+
+    /**
+     * Parses a package declaration and returns it as a PackageDeclaration.
+     *
+     * @param packageDeclaration a declaration like "package com.microsoft.java;"
+     * @return the AST for the parameter
+     * @throws ParseProblemException if the source code has parser errors
+     */
+    public static PackageDeclaration parsePackageDeclaration(String packageDeclaration) {
+        return simplifiedParse(PACKAGE_DECLARATION, provider(packageDeclaration));
     }
 
 }

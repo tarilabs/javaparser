@@ -19,12 +19,19 @@
  * GNU Lesser General Public License for more details.
  */
 
-package com.github.javaparser.ast.nodeTypes;
+package com.github.javaparser;
 
-import com.github.javaparser.ast.Node;
+import org.junit.Test;
 
-/**
- * A node with parse problems.
- */
-public interface BadNode<N extends Node> {
+import java.io.IOException;
+
+public class GeneratedJavaParserTokenManagerTest {
+    private String makeFilename(String sampleName) {
+        return "com/github/javaparser/issue_samples/" + sampleName + ".java.txt";
+    }
+
+    @Test
+    public void issue1003() throws IOException {
+        JavaParser.parseResource(makeFilename("issue1003"));
+    }
 }

@@ -3,20 +3,17 @@ package com.github.javaparser.printer.lexicalpreservation.changes;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.observer.ObservableProperty;
-import com.github.javaparser.printer.concretesyntaxmodel.CsmConditional;
 
 /**
  * The Addition of an element to a list.
  */
 public class ListAdditionChange implements Change {
-    private ObservableProperty observableProperty;
-    private NodeList nodeList;
-    private int index;
-    private Node nodeAdded;
+    private final ObservableProperty observableProperty;
+    private final int index;
+    private final Node nodeAdded;
 
-    public ListAdditionChange(ObservableProperty observableProperty, NodeList nodeList, int index, Node nodeAdded) {
+    public ListAdditionChange(ObservableProperty observableProperty, int index, Node nodeAdded) {
         this.observableProperty = observableProperty;
-        this.nodeList = nodeList;
         this.index = index;
         this.nodeAdded = nodeAdded;
     }
@@ -24,8 +21,12 @@ public class ListAdditionChange implements Change {
     @Override
     public Object getValue(ObservableProperty property, Node node) {
         if (property == observableProperty) {
-            NodeList nodeList = new NodeList();
-            NodeList currentNodeList = (NodeList)(new NoChange().getValue(property, node));
+            NodeList<Node> nodeList = new NodeList<>();
+            Object currentRawValue = new NoChange().getValue(property, node);
+            if (!(currentRawValue instanceof NodeList)){
+                throw new IllegalStateException("Expected NodeList, found " + currentRawValue.getClass().getCanonicalName());
+            }
+            NodeList<?> currentNodeList = (NodeList<?>)(currentRawValue);
             nodeList.addAll(currentNodeList);
             nodeList.add(index, nodeAdded);
             return nodeList;
