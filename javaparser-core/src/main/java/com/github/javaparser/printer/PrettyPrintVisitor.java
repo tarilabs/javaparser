@@ -196,7 +196,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         }
     }
 
-    private void printTypeArgs(final NodeWithTypeArguments<?> nodeWithTypeArguments, final Void arg) {
+    public void printTypeArgs(final NodeWithTypeArguments<?> nodeWithTypeArguments, final Void arg) {
         NodeList<Type> typeArguments = nodeWithTypeArguments.getTypeArguments().orElse(null);
         if (!isNullOrEmpty(typeArguments)) {
             printer.print("<");
@@ -225,7 +225,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         }
     }
 
-    private void printArguments(final NodeList<Expression> args, final Void arg) {
+    public void printArguments(final NodeList<Expression> args, final Void arg) {
         printer.print("(");
         if (!isNullOrEmpty(args)) {
             for (final Iterator<Expression> i = args.iterator(); i.hasNext(); ) {
@@ -267,7 +267,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         printer.print(postfix);
     }
 
-    void printJavaComment(final Optional<Comment> javacomment, final Void arg) {
+    public void printJavaComment(final Optional<Comment> javacomment, final Void arg) {
         if (configuration.isPrintJavaDoc()) {
             javacomment.ifPresent(c -> c.accept(this, arg));
         }

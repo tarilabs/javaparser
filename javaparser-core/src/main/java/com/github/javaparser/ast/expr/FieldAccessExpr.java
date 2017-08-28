@@ -20,24 +20,26 @@
  */
 package com.github.javaparser.ast.expr;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Generated;
+
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import static com.github.javaparser.utils.Utils.assertNotNull;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.FieldAccessExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
-import javax.annotation.Generated;
-import com.github.javaparser.TokenRange;
+
+import static com.github.javaparser.utils.Utils.assertNotNull;
 
 /**
  * Access of a field of an object.
@@ -45,7 +47,7 @@ import com.github.javaparser.TokenRange;
  *
  * @author Julio Vilmar Gesser
  */
-public final class FieldAccessExpr extends Expression implements NodeWithSimpleName<FieldAccessExpr>, NodeWithTypeArguments<FieldAccessExpr> {
+public class FieldAccessExpr extends Expression implements NodeWithSimpleName<FieldAccessExpr>, NodeWithTypeArguments<FieldAccessExpr> {
 
     private Expression scope;
 

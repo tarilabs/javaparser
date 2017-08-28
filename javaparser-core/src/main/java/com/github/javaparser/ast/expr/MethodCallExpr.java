@@ -20,7 +20,14 @@
  */
 package com.github.javaparser.ast.expr;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Generated;
+
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
@@ -28,18 +35,13 @@ import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import static com.github.javaparser.utils.Utils.assertNotNull;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.visitor.CloneVisitor;
-import com.github.javaparser.metamodel.MethodCallExprMetaModel;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
-import javax.annotation.Generated;
-import com.github.javaparser.TokenRange;
+import com.github.javaparser.metamodel.MethodCallExprMetaModel;
+
+import static com.github.javaparser.utils.Utils.assertNotNull;
 
 /**
  * A method call on an object. <br/><code>circle.circumference()</code> <br/>In <code>a.&lt;String&gt;bb(15);</code> a
@@ -47,7 +49,7 @@ import com.github.javaparser.TokenRange;
  *
  * @author Julio Vilmar Gesser
  */
-public final class MethodCallExpr extends Expression implements NodeWithTypeArguments<MethodCallExpr>, NodeWithArguments<MethodCallExpr>, NodeWithSimpleName<MethodCallExpr>, NodeWithOptionalScope<MethodCallExpr> {
+public class MethodCallExpr extends Expression implements NodeWithTypeArguments<MethodCallExpr>, NodeWithArguments<MethodCallExpr>, NodeWithSimpleName<MethodCallExpr>, NodeWithOptionalScope<MethodCallExpr> {
 
     private Expression scope;
 
