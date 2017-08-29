@@ -21,6 +21,10 @@
 
 package com.github.javaparser.printer;
 
+import static com.github.javaparser.ast.Node.Parsedness.UNPARSABLE;
+import static com.github.javaparser.utils.PositionUtils.sortByBeginPosition;
+import static com.github.javaparser.utils.Utils.isNullOrEmpty;
+
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -28,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.Position;
 import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -134,10 +139,6 @@ import com.github.javaparser.ast.visitor.Visitable;
 import com.github.javaparser.ast.visitor.VoidRuleVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 
-import static com.github.javaparser.ast.Node.Parsedness.UNPARSABLE;
-import static com.github.javaparser.utils.PositionUtils.sortByBeginPosition;
-import static com.github.javaparser.utils.Utils.isNullOrEmpty;
-
 /**
  * Outputs the AST as formatted Java source code.
  *
@@ -227,12 +228,18 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
 
     public void printArguments(final NodeList<Expression> args, final Void arg) {
         printer.print("(");
+        Position cursorRef = printer.getCursor();
         if (!isNullOrEmpty(args)) {
             for (final Iterator<Expression> i = args.iterator(); i.hasNext(); ) {
                 final Expression e = i.next();
                 e.accept(this, arg);
                 if (i.hasNext()) {
-                    printer.print(", ");
+                    printer.print(",");
+                    if (configuration.isColumnAlignParameters()) {
+                        printer.wrapToColumn(cursorRef.column);
+                    } else {
+                        printer.print(" ");
+                    }
                 }
             }
         }
