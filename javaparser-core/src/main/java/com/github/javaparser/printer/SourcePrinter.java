@@ -22,9 +22,8 @@
 package com.github.javaparser.printer;
 
 import java.text.Normalizer;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import com.github.javaparser.Position;
 
@@ -35,16 +34,12 @@ public class SourcePrinter {
     private boolean indented = false;
     private final StringBuilder buf = new StringBuilder();
     private Position cursor = new Position(1, 0);
-    private Map<CursorMarker, Position> cursorMarkers = new EnumMap<>(CursorMarker.class);
-    
-    public static enum CursorMarker {
-        FIRST_METHOD_CALL_CHAIN,
-        FIRST_ARGUMENT
-    }
+    private Deque<Position> methodChainPositions = new LinkedList<>();
 
     SourcePrinter(final String indentation, final String endOfLineCharacter) {
         this.indentation = indentation;
         this.endOfLineCharacter = endOfLineCharacter;
+        pushMethodChainPosition(cursor); // initialize a default position for methodChainPositions, it is expected by method #resetMethodChainPosition()
     }
 
     public SourcePrinter indent() {
@@ -104,12 +99,21 @@ public class SourcePrinter {
         return cursor;
     }
     
-    public Position setMarker(CursorMarker marker) {
-        return this.cursorMarkers.put(marker, cursor);
+    public void resetMethodChainPosition(Position position) {
+        this.methodChainPositions.pop();
+        this.methodChainPositions.push(position);
+    }
+
+    public void pushMethodChainPosition(Position position) {
+        this.methodChainPositions.push(position);
     }
     
-    public Optional<Position> getMarker(CursorMarker marker) {
-        return Optional.ofNullable(this.cursorMarkers.get(marker));
+    public Position peekMethodChainPosition() {
+        return this.methodChainPositions.peek();
+    }
+    
+    public Position popMethodChainPosition() {
+        return this.methodChainPositions.pop();
     }
     
     /**

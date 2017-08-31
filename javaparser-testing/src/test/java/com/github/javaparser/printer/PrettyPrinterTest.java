@@ -32,6 +32,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.stream.IntStream;
+
 public class PrettyPrinterTest {
 
     private String prettyPrintField(String code) {
@@ -121,22 +123,25 @@ public class PrettyPrinterTest {
     
     @Test
     public void prettyAlignMethodCallChains() {
+        IntStream.range(0, 10).filter(x -> x % 2 == 0).map(x -> x * IntStream.of(1,3,5,1).sum()).forEach(System.out::println);
         PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
         config.setIndent("\t");
         config.setColumnAlignFirstMethodChain(true);
         
         final String EOL = config.getEndOfLineCharacter();
         
-        String code = "class Example { void foo() { IntStream.range(0, 10).filter(x -> x % 2 == 0).map(x -> x * 10).forEach(System.out::println); } }";
+        String code = "class Example { void foo() { IntStream.range(0, 10).filter(x -> x % 2 == 0).map(x -> x * IntStream.of(1,3,5,1).sum()).forEach(System.out::println); } }";
         String expected = "class Example {" + EOL + 
                 "" + EOL + 
                 "\tvoid foo() {" + EOL + 
                 "\t\tIntStream.range(0, 10)" + EOL + 
                 "\t\t         .filter(x -> x % 2 == 0)" + EOL + 
-                "\t\t         .map(x -> x * 10)" + EOL + 
+                "\t\t         .map(x -> x * IntStream.of(1, 3, 5, 1)" + EOL + 
+                "\t\t                                .sum())" + EOL + 
                 "\t\t         .forEach(System.out::println);" + EOL + 
                 "\t}" + EOL + 
-                "}" + EOL;
+                "}" + EOL + 
+                "";
 
         assertEquals(expected, new PrettyPrinter(config).print(JavaParser.parse(code)));
     }

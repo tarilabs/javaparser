@@ -228,7 +228,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
 
     public void printArguments(final NodeList<Expression> args, final Void arg) {
         printer.print("(");
-        printer.setMarker(SourcePrinter.CursorMarker.FIRST_ARGUMENT);
+        Position cursorRef = printer.getCursor();
         if (!isNullOrEmpty(args)) {
             for (final Iterator<Expression> i = args.iterator(); i.hasNext(); ) {
                 final Expression e = i.next();
@@ -236,9 +236,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
                 if (i.hasNext()) {
                     printer.print(",");
                     if (configuration.isColumnAlignParameters()) {
-                        if (printer.getMarker(SourcePrinter.CursorMarker.FIRST_ARGUMENT).isPresent()) {
-                            printer.wrapToColumn(printer.getMarker(SourcePrinter.CursorMarker.FIRST_ARGUMENT).get().column);
-                        }
+                        printer.wrapToColumn(cursorRef.column);
                     } else {
                         printer.print(" ");
                     }
@@ -794,17 +792,19 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         if (n.getScope().isPresent()) {
             n.getScope().get().accept(this, arg);
             if (configuration.isColumnAlignFirstMethodChain()) {
-                if (!(n.getScope().get() instanceof MethodCallExpr)) {
-                    printer.setMarker(SourcePrinter.CursorMarker.FIRST_METHOD_CALL_CHAIN);
-                } else if (printer.getMarker(SourcePrinter.CursorMarker.FIRST_METHOD_CALL_CHAIN).isPresent()) {
-                    printer.wrapToColumn(printer.getMarker(SourcePrinter.CursorMarker.FIRST_METHOD_CALL_CHAIN).get().column);
+                if (!(n.getScope().get() instanceof MethodCallExpr) || (!((MethodCallExpr)n.getScope().get()).getScope().isPresent())) {
+                    printer.resetMethodChainPosition(printer.getCursor());
+                } else {
+                    printer.wrapToColumn(printer.peekMethodChainPosition().column);
                 }
             }
             printer.print(".");
         }
         printTypeArgs(n, arg);
         n.getName().accept(this, arg);
+        printer.pushMethodChainPosition(printer.getCursor());
         printArguments(n.getArguments(), arg);
+        printer.popMethodChainPosition();
     }
 
     @Override
