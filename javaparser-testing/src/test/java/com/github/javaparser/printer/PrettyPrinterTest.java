@@ -97,21 +97,47 @@ public class PrettyPrinterTest {
     
     @Test
     public void prettyColumnAlignParameters() {
-        String code = "class Example { void foo(Object arg0,Object arg1){ myMethod(1, 2, 3, 5, Object.class); } }";
-        String expected = "class Example {\n" + 
-                "\n" + 
-                "\tvoid foo(Object arg0, Object arg1) {\n" + 
-                "\t\tmyMethod(1,\n" + 
-                "\t\t         2,\n" + 
-                "\t\t         3,\n" + 
-                "\t\t         5,\n" + 
-                "\t\t         Object.class);\n" + 
-                "\t}\n" + 
-                "}\n" + 
-                "";
         PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
         config.setIndent("\t");
         config.setColumnAlignParameters(true);
+        
+        final String EOL = config.getEndOfLineCharacter();
+        
+        String code = "class Example { void foo(Object arg0,Object arg1){ myMethod(1, 2, 3, 5, Object.class); } }";
+        String expected = "class Example {" + EOL + 
+                "" + EOL + 
+                "\tvoid foo(Object arg0, Object arg1) {" + EOL + 
+                "\t\tmyMethod(1," + EOL + 
+                "\t\t         2," + EOL + 
+                "\t\t         3," + EOL + 
+                "\t\t         5," + EOL + 
+                "\t\t         Object.class);" + EOL + 
+                "\t}" + EOL + 
+                "}" + EOL + 
+                "";
+        
+        assertEquals(expected, new PrettyPrinter(config).print(JavaParser.parse(code)));
+    }
+    
+    @Test
+    public void prettyAlignMethodCallChains() {
+        PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
+        config.setIndent("\t");
+        config.setColumnAlignFirstMethodChain(true);
+        
+        final String EOL = config.getEndOfLineCharacter();
+        
+        String code = "class Example { void foo() { IntStream.range(0, 10).filter(x -> x % 2 == 0).map(x -> x * 10).forEach(System.out::println); } }";
+        String expected = "class Example {" + EOL + 
+                "" + EOL + 
+                "\tvoid foo() {" + EOL + 
+                "\t\tIntStream.range(0, 10)" + EOL + 
+                "\t\t         .filter(x -> x % 2 == 0)" + EOL + 
+                "\t\t         .map(x -> x * 10)" + EOL + 
+                "\t\t         .forEach(System.out::println);" + EOL + 
+                "\t}" + EOL + 
+                "}" + EOL;
+
         assertEquals(expected, new PrettyPrinter(config).print(JavaParser.parse(code)));
     }
 

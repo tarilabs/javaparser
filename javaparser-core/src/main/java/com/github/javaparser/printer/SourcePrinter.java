@@ -22,6 +22,9 @@
 package com.github.javaparser.printer;
 
 import java.text.Normalizer;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
 
 import com.github.javaparser.Position;
 
@@ -32,6 +35,12 @@ public class SourcePrinter {
     private boolean indented = false;
     private final StringBuilder buf = new StringBuilder();
     private Position cursor = new Position(1, 0);
+    private Map<CursorMarker, Position> cursorMarkers = new EnumMap<>(CursorMarker.class);
+    
+    public static enum CursorMarker {
+        FIRST_METHOD_CALL_CHAIN,
+        FIRST_ARGUMENT
+    }
 
     SourcePrinter(final String indentation, final String endOfLineCharacter) {
         this.indentation = indentation;
@@ -93,6 +102,14 @@ public class SourcePrinter {
     
     public Position getCursor() {
         return cursor;
+    }
+    
+    public Position setMarker(CursorMarker marker) {
+        return this.cursorMarkers.put(marker, cursor);
+    }
+    
+    public Optional<Position> getMarker(CursorMarker marker) {
+        return Optional.ofNullable(this.cursorMarkers.get(marker));
     }
     
     /**
