@@ -2868,8 +2868,6 @@ TOKEN :
   < MINUTE_LITERAL: <DECIMAL_LITERAL> "m" >
 |
   < HOUR_LITERAL: <DECIMAL_LITERAL> "h" >
-|
-  < DAY_LITERAL: <DECIMAL_LITERAL> "d" >
 }
 
 RuleDeclaration RuleDeclaration(ModifierHolder modifier):
@@ -3037,7 +3035,7 @@ Expression TemporalLiteral():
 	  		ret = new TemporalLiteralExpr(tokenRange(), token.image, TimeUnit.HOURS);
 	  }
 	|
-	  <DAY_LITERAL> {
+	  <FLOATING_POINT_LITERAL> {
 	  		ret = new TemporalLiteralExpr(tokenRange(), token.image, TimeUnit.DAYS);
 	  }
   )
