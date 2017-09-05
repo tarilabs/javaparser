@@ -6,6 +6,7 @@
         <module>javaparser-core-generators</module>
         <module>javaparser-metamodel-generator</module>
         <module>drlx-compiler</module>
+        <module>drlx-parser</module>
     </modules>
 
     <groupId>com.github.javaparser</groupId>
