@@ -6,7 +6,6 @@
         <module>javaparser-core-generators</module>
         <module>javaparser-metamodel-generator</module>
         <module>drlx-compiler</module>
-        <module>drlx-examples</module>
     </modules>
 
     <groupId>com.github.javaparser</groupId>
@@ -18,39 +17,6 @@
     <url>https://github.com/javaparser</url>
     <inceptionYear>2007</inceptionYear>
     <description>Java 9 Parser Parser and Abstract Syntax Tree for Java</description>
-
-<!-- Kiegroup Drools DRLX development against latest -->
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-<!-- /Kiegroup Drools DRLX development against latest -->
 
     <licenses>
         <license>
