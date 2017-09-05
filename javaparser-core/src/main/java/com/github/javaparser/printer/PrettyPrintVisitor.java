@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.Position;
 import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -227,12 +228,18 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
 
     public void printArguments(final NodeList<Expression> args, final Void arg) {
         printer.print("(");
+        Position cursorRef = printer.getCursor();
         if (!isNullOrEmpty(args)) {
             for (final Iterator<Expression> i = args.iterator(); i.hasNext(); ) {
                 final Expression e = i.next();
                 e.accept(this, arg);
                 if (i.hasNext()) {
-                    printer.print(", ");
+                    printer.print(",");
+                    if (configuration.isColumnAlignParameters()) {
+                        printer.wrapToColumn(cursorRef.column);
+                    } else {
+                        printer.print(" ");
+                    }
                 }
             }
         }
@@ -784,11 +791,20 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         printJavaComment(n.getComment(), arg);
         if (n.getScope().isPresent()) {
             n.getScope().get().accept(this, arg);
+            if (configuration.isColumnAlignFirstMethodChain()) {
+                if (!(n.getScope().get() instanceof MethodCallExpr) || (!((MethodCallExpr)n.getScope().get()).getScope().isPresent())) {
+                    printer.resetMethodChainPosition(printer.getCursor());
+                } else {
+                    printer.wrapToColumn(printer.peekMethodChainPosition().column);
+                }
+            }
             printer.print(".");
         }
         printTypeArgs(n, arg);
         n.getName().accept(this, arg);
+        printer.pushMethodChainPosition(printer.getCursor());
         printArguments(n.getArguments(), arg);
+        printer.popMethodChainPosition();
     }
 
     @Override

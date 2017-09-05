@@ -1,7 +1,24 @@
+Version 3.3.4
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/56?closed=1)
+* `SourceZip` has been added.
+Use it to read source code from jars or zip files.
+Thank you @ryan-beckett !
+* JavaCC was upgraded to 7.0.2
+* A new option for the pretty printer was added.
+You can now wrap-and-column-align parameters of method calls.
+Thank you @tarilabs !
+
+Version 3.3.3
+------------------
+[issues resolved](https://github.com/javaparser/javaparser/milestone/55?closed=1)
+* Parsing a partial java file (like an expression or statement) no longer ignores trailing code.
+* New memory saving option: turn off token list.
+
 Version 3.3.2
 ------------------
 [issues resolved](https://github.com/javaparser/javaparser/milestone/54?closed=1)
-* `VisitorMap` lets you overre hashcode/equals for nodes when used as a key for a map.
+* `VisitorMap` lets you override hashcode/equals for nodes when used as a key for a map.
 
 Version 3.3.1
 ------------------
