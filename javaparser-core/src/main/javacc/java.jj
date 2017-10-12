@@ -3064,22 +3064,24 @@ OOPathChunk OOPathChunk():
     { return new OOPathChunk(range(begin, token()), field, inlineCast, condition); }
 }
 
-Expression DrlxExpression():
+DrlxExpression DrlxExpression():
 {
-	Expression ret;
+	SimpleName decl = null;
+	Expression expr;
 }
 {
+  [ LOOKAHEAD(2) decl = SimpleName() ":" ]
   (
   LOOKAHEAD(PointFreeExpr())
-  ret = PointFreeExpr()
+    expr = PointFreeExpr()
   |
   LOOKAHEAD(OOPathExpr())
-    ret = OOPathExpr()
+    expr = OOPathExpr()
   |
-  ret = Expression()
+  expr = Expression()
   )
 
-  { return ret; }
+  { return new DrlxExpression(decl, expr); }
 }
 
 PointFreeExpr PointFreeExpr():
