@@ -3107,36 +3107,49 @@ PointFreeExpr PointFreeExpr():
       { return new PointFreeExpr(range(begin, token()), left, right, operator, arg1, arg2 ); }
 }
 
-Expression TemporalLiteral():
+TemporalLiteralExpr TemporalLiteral():
 {
-	Expression ret;
+	NodeList<TemporalLiteralChunkExpr> chunks = emptyList();
+	TemporalLiteralChunkExpr chunk;
 }
 {
   (
-	  <INTEGER_LITERAL> {
-	  		ret = new IntegerLiteralExpr(tokenRange(), token.image);
+	  <INTEGER_LITERAL>
+	  {
+	  		chunks.add(new TemporalLiteralChunkExpr(tokenRange(), token.image));
 	  }
 	|
+	  chunk = TemporalLiteralChunk() { chunks.add(chunk); }
+      ( chunk = TemporalLiteralChunk() { chunks.add(chunk); } )*
+  )
+  { return new TemporalLiteralExpr(tokenRange(), chunks); }
+}
+
+TemporalLiteralChunkExpr TemporalLiteralChunk():
+{
+	TemporalLiteralChunkExpr ret;
+}
+{
+  (
 	  <MILLISECOND_LITERAL> {
-	  		ret = new TemporalLiteralExpr(tokenRange(), token.image, TimeUnit.MILLISECONDS);
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.MILLISECONDS);
 	  }
 	|
 	  <SECOND_LITERAL> {
-	  		ret = new TemporalLiteralExpr(tokenRange(), token.image, TimeUnit.SECONDS);
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.SECONDS);
 	  }
 	|
 	  <MINUTE_LITERAL> {
-	  		ret = new TemporalLiteralExpr(tokenRange(), token.image, TimeUnit.MINUTES);
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.MINUTES);
 	  }
 	|
 	  <HOUR_LITERAL> {
-	  		ret = new TemporalLiteralExpr(tokenRange(), token.image, TimeUnit.HOURS);
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.HOURS);
 	  }
 	|
 	  <FLOATING_POINT_LITERAL> {
-	  		ret = new TemporalLiteralExpr(tokenRange(), token.image, TimeUnit.DAYS);
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.DAYS);
 	  }
   )
   { return ret; }
 }
-
