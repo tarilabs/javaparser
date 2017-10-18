@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.ArrayCreationLevel;
@@ -343,6 +344,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
     @Override
     public void visit(final NameExpr n, final Void arg) {
         printJavaComment(n.getComment(), arg);
+        IntStream.range(0, n.getBackReferencesCount()).forEach(s -> printer.print("../"));
         n.getName().accept(this, arg);
 
         printOrphanCommentsEnding(n);

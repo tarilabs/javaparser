@@ -24,7 +24,6 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Generated;
-
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.CompilationUnit;
@@ -43,7 +42,6 @@ import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.metamodel.JavaParserMetaModel;
 import com.github.javaparser.metamodel.TypeDeclarationMetaModel;
-
 import static com.github.javaparser.utils.Utils.assertNotNull;
 import static java.util.stream.Collectors.toList;
 

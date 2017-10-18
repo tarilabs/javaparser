@@ -1588,6 +1588,7 @@ Expression Expression():
             "::"  [typeArgs = TypeArguments() ] (Identifier() | "new") { ret = new MethodReferenceExpr(range(ret.getTokenRange().get().getBegin(), token()), ret, typeArgs.list, token.image); }
         )
     ]
+
     
     { return ret; }
 }
@@ -1919,6 +1920,7 @@ Expression PrimaryPrefix():
 	JavaToken begin;
 	Parameter p = null;
 	SimpleName id = null;
+	int numberOfBackReferences = 0;
 }
 {
   (
@@ -1971,13 +1973,18 @@ Expression PrimaryPrefix():
 		}
 
 	|
+	    (
+                      "../"
+                      { numberOfBackReferences++; }
+        )*
 	  	name = SimpleName() { begin=token(); }
 	  	[ args = Arguments() { hasArgs=true; } ]
 	  	{
+
 	  		if (hasArgs) {
 	  			ret = new MethodCallExpr(range(begin, token()), null, emptyList(), name, args);
 			} else {
-	  			ret = new NameExpr(name);
+	  			ret = new NameExpr(name, numberOfBackReferences );
 			}
 	  	}
   )
@@ -2042,7 +2049,7 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 	  )
 	|
   	  "!." {isDrl=true;}
-    (
+       (
         "this" { ret = new ThisExpr(range(scope.getTokenRange().get().getBegin(), token()), scope); }
       |
         ret = AllocationExpression(scope)
@@ -2058,7 +2065,7 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
                 ret =  new NullSafeFieldAccessExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name);
             }
         }
-    )
+        )
 // drlx end
   )
   { return isDrl ? asDrlNode(ret) : ret; }

@@ -147,6 +147,7 @@ public final class JavaParserMetaModel {
         methodReferenceExprMetaModel.getConstructorParameters().add(methodReferenceExprMetaModel.typeArgumentsPropertyMetaModel);
         methodReferenceExprMetaModel.getConstructorParameters().add(methodReferenceExprMetaModel.identifierPropertyMetaModel);
         nameExprMetaModel.getConstructorParameters().add(nameExprMetaModel.namePropertyMetaModel);
+        nameExprMetaModel.getConstructorParameters().add(nameExprMetaModel.backReferencesCountPropertyMetaModel);
         nameMetaModel.getConstructorParameters().add(nameMetaModel.qualifierPropertyMetaModel);
         nameMetaModel.getConstructorParameters().add(nameMetaModel.identifierPropertyMetaModel);
         nameMetaModel.getConstructorParameters().add(nameMetaModel.annotationsPropertyMetaModel);
@@ -542,6 +543,8 @@ public final class JavaParserMetaModel {
         methodReferenceExprMetaModel.getDeclaredPropertyMetaModels().add(methodReferenceExprMetaModel.typeArgumentsPropertyMetaModel);
         methodReferenceExprMetaModel.usingDiamondOperatorPropertyMetaModel = new PropertyMetaModel(methodReferenceExprMetaModel, "usingDiamondOperator", boolean.class, Optional.empty(), false, false, false, false, false);
         methodReferenceExprMetaModel.getDerivedPropertyMetaModels().add(methodReferenceExprMetaModel.usingDiamondOperatorPropertyMetaModel);
+        nameExprMetaModel.backReferencesCountPropertyMetaModel = new PropertyMetaModel(nameExprMetaModel, "backReferencesCount", int.class, Optional.empty(), false, false, false, false, false);
+        nameExprMetaModel.getDeclaredPropertyMetaModels().add(nameExprMetaModel.backReferencesCountPropertyMetaModel);
         nameExprMetaModel.namePropertyMetaModel = new PropertyMetaModel(nameExprMetaModel, "name", com.github.javaparser.ast.expr.SimpleName.class, Optional.of(simpleNameMetaModel), false, false, false, false, false);
         nameExprMetaModel.getDeclaredPropertyMetaModels().add(nameExprMetaModel.namePropertyMetaModel);
         nameMetaModel.annotationsPropertyMetaModel = new PropertyMetaModel(nameMetaModel, "annotations", com.github.javaparser.ast.expr.AnnotationExpr.class, Optional.of(annotationExprMetaModel), false, false, true, false, false);
